@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #FBF9F5;
+    color: #292524;
+  }
+}
+
+/* Custom background grid pattern in nude / warm neutral */
+.bg-nude-grid {
+  background-image: radial-gradient(#E2D9CE 1px, transparent 1px);
+  background-size: 24px 24px;
+}

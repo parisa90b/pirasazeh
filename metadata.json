@@ -1,0 +1,6 @@
+{
+  "name": "سوله پیراسازه - طراحی و ساخت سوله و اسکلت فلزی اهواز",
+  "description": "طراحی، محاسبات، ساخت و نصب تخصصی انواع سوله صنعتی، کارگاهی، سازه‌های فلزی، پل‌های ماشین‌رو و جرثقیل‌های سقفی در اهواز و خوزستان",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
