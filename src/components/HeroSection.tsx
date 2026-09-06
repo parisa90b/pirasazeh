@@ -39,16 +39,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-stone-900 leading-[1.3] tracking-tight">
-              طراحی، ساخت و اجرای انواع{' '}
+              سوله سازی اهواز؛ طراحی و ساخت انواع{' '}
               <span className="text-amber-800 underline decoration-amber-300 decoration-wavy decoration-2 underline-offset-8">
                 سوله صنعتی
               </span>{' '}
-              و استراکچر فلزی سنگین
+              ، پل ماشین‌رو و استراکچر فلزی
             </h1>
 
             {/* Sub-headline */}
             <p className="text-sm sm:text-base text-stone-600 leading-relaxed max-w-2xl">
-              بهینه‌سازی حداکثری وزن آهن‌آلات در نرم‌افزارهای Tekla و SAP2000، تولید با دستگاه‌های برش CNC و جوش اتوماتیک زیرپودری SAW، همراه با دفترچه محاسبات رسمی نظام مهندسی و ضمانت کتبی ۳ ساله.
+              کارخانه و کارگاه اختصاصی سوله پیراسازه مستقر در شیبان اهواز با تامین مستقیم فولاد از اکسین و کاویان، بهینه‌سازی وزن آهن در تکلا و سپ، جوش اتوماتیک زیرپودری SAW، گارانتی کتبی ۳ ساله و تاییدیه رسمی نظام مهندسی.
             </p>
 
             {/* Key Advantages Checklist */}

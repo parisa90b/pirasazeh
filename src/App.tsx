@@ -28,8 +28,8 @@ export function App() {
     return COMPANY_INFO;
   });
 
-  // Gallery images state (persistent in localStorage, defaults to 16 SEO curated projects)
-  const [galleryImages, setGalleryImages] = useState<GalleryImageItem[]>(() => {
+  // Gallery images state (16 SEO curated projects)
+  const [galleryImages] = useState<GalleryImageItem[]>(() => {
     try {
       const saved = localStorage.getItem('solepirasazeh_gallery_images');
       if (saved) {
@@ -43,39 +43,6 @@ export function App() {
     }
     return DEFAULT_GALLERY_IMAGES;
   });
-
-  const handleAddImages = (newImages: GalleryImageItem[]) => {
-    setGalleryImages((prev) => {
-      const updated = [...newImages, ...prev];
-      try {
-        localStorage.setItem('solepirasazeh_gallery_images', JSON.stringify(updated));
-      } catch {
-        // storage quota fallback
-      }
-      return updated;
-    });
-  };
-
-  const handleRemoveImage = (id: string) => {
-    setGalleryImages((prev) => {
-      const updated = prev.filter((img) => img.id !== id);
-      try {
-        localStorage.setItem('solepirasazeh_gallery_images', JSON.stringify(updated));
-      } catch {
-        // ignore
-      }
-      return updated;
-    });
-  };
-
-  const handleResetDefaultImages = () => {
-    setGalleryImages(DEFAULT_GALLERY_IMAGES);
-    try {
-      localStorage.setItem('solepirasazeh_gallery_images', JSON.stringify(DEFAULT_GALLERY_IMAGES));
-    } catch {
-      // ignore
-    }
-  };
 
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 
@@ -148,9 +115,6 @@ export function App() {
         {/* 4. Projects Gallery (Pure visual gallery without descriptions - SEO optimized) */}
         <ProjectsGallery 
           images={galleryImages}
-          onAddImages={handleAddImages}
-          onRemoveImage={handleRemoveImage}
-          onResetDefaultImages={handleResetDefaultImages}
         />
 
         {/* 5. Custom Quote Form (Direct transmission of dimensions to structural designer via WhatsApp & Bale) */}

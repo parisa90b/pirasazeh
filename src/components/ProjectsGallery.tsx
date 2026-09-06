@@ -1,14 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Images, 
-  UploadCloud, 
   X, 
   ChevronRight, 
   ChevronLeft, 
   ZoomIn, 
-  Trash2, 
-  Plus,
-  RotateCcw,
   Sparkles,
   MapPin,
   Building2,
@@ -25,16 +21,10 @@ import { PROJECTS_DATA, CRANE_PROJECTS_DATA, BRIDGE_PROJECTS_DATA } from '../sit
 
 interface ProjectsGalleryProps {
   images: GalleryImageItem[];
-  onAddImages: (newImages: GalleryImageItem[]) => void;
-  onRemoveImage: (id: string) => void;
-  onResetDefaultImages?: () => void;
 }
 
 export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
   images,
-  onAddImages,
-  onRemoveImage,
-  onResetDefaultImages,
 }) => {
   // Active view: 'portfolio' (17 company sheds) | 'bridges' (4 vehicular bridges) | 'cranes' (6 overhead cranes) | 'gallery' (pure visual photos)
   const [activeTab, setActiveTab] = useState<'portfolio' | 'bridges' | 'cranes' | 'gallery'>('portfolio');
@@ -46,8 +36,6 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [bridgeSearchQuery, setBridgeSearchQuery] = useState<string>('');
   const [craneSearchQuery, setCraneSearchQuery] = useState<string>('');
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Gallery Categories
   const galleryCategories = [
@@ -153,67 +141,6 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedImageIndex, images.length]);
 
-  // File upload processor
-  const processFiles = (files: FileList | File[]) => {
-    const filesArray = Array.from(files);
-    if (filesArray.length === 0) return;
-
-    const newItems: GalleryImageItem[] = [];
-    let processed = 0;
-
-    filesArray.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          const rawName = file.name.replace(/\.[^/.]+$/, '');
-          newItems.push({
-            id: 'img-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
-            imageUrl: event.target.result as string,
-            title: `پروژه سوله پیراسازه اهواز - ${rawName}`,
-            altText: `تصویر ساخت و نصب سوله صنعتی سوله پیراسازه در استان خوزستان (${rawName})`,
-            category: 'پروژه جدید',
-            location: 'اهواز، خوزستان',
-            originalFileName: file.name
-          });
-        }
-        processed++;
-        if (processed === filesArray.length) {
-          onAddImages(newItems);
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      processFiles(e.target.files);
-    }
-  };
-
-  // Drag and drop handlers
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      processFiles(e.dataTransfer.files);
-    }
-  };
-
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (selectedImageIndex !== null && images.length > 0) {
@@ -240,12 +167,7 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
       id="projects" 
       itemScope 
       itemType="https://schema.org/ImageGallery"
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      className={`py-14 lg:py-20 bg-[#FBF9F5] border-b border-[#E8DFD5] transition-colors duration-200 ${
-        isDragging ? 'bg-amber-50/70 ring-2 ring-amber-500 ring-inset' : ''
-      }`}
+      className="py-14 lg:py-20 bg-[#FBF9F5] border-b border-[#E8DFD5] transition-colors duration-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -264,44 +186,12 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
             </p>
           </div>
 
-          {/* Action buttons (Add photo & Reset) */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              multiple
-              accept="image/*"
-              className="hidden"
-              id="gallery-file-upload"
-            />
-            
-            <button
-              onClick={() => {
-                setActiveTab('gallery');
-                fileInputRef.current?.click();
-              }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
-              title="بارگذاری تصاویر سوله از حافظه دستگاه"
-            >
-              <Plus className="w-4 h-4" />
-              <span>بارگذاری عکس جدید</span>
-            </button>
-
-            {onResetDefaultImages && (
-              <button
-                onClick={() => {
-                  if (window.confirm('آیا مایلید گالری به ۱۶ عکس سئو شده استاندارد بازنشانی شود؟')) {
-                    onResetDefaultImages();
-                  }
-                }}
-                className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-[#D8CEBF] bg-[#F5EFEB] hover:bg-[#EAE0D3] text-stone-700 font-medium text-xs shadow-sm transition-all cursor-pointer"
-                title="بارگذاری مجدد ۱۶ عکس سئو شده"
-              >
-                <RotateCcw className="w-3.5 h-3.5 text-amber-800" />
-                <span className="hidden sm:inline">بازنشانی ۱۶ عکس سئو</span>
-              </button>
-            )}
+          {/* Quality & Factory Badge */}
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#F3ECE4] border border-[#D8CEBF] text-stone-800 text-xs font-bold shadow-sm">
+              <ShieldCheck className="w-4 h-4 text-emerald-700" />
+              <span>گارانتی ۳ ساله و تاییدیه نظام مهندسی</span>
+            </div>
           </div>
         </div>
 
@@ -355,13 +245,6 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
             <span>گالری تصاویر کارگاه ({images.length})</span>
           </button>
         </div>
-
-        {/* Drag Over Notification */}
-        {isDragging && (
-          <div className="mb-6 p-4 rounded-2xl border-2 border-dashed border-amber-600 bg-amber-50 text-center text-amber-900 font-bold text-sm">
-            عکس‌ها را همین‌جا رها کنید تا به گالری اضافه شوند...
-          </div>
-        )}
 
         {/* ------------------------------------------------------------- */}
         {/* VIEW 1: Pure Visual Gallery (No text cards under thumbnails) */}
@@ -437,20 +320,6 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
                           {img.category}
                         </div>
                       )}
-
-                      {/* Quick Remove Button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (window.confirm('آیا از حذف این عکس از گالری اطمینان دارید؟')) {
-                            onRemoveImage(img.id);
-                          }
-                        }}
-                        title="حذف تصویر"
-                        className="absolute top-2 left-2 w-7 h-7 rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-600 cursor-pointer"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
                     </div>
                   );
                 })}
@@ -458,34 +327,24 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
             ) : (
               <div className="rounded-3xl border-2 border-dashed border-[#D8CEBF] bg-[#F5EFEB]/60 p-10 sm:p-14 text-center space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-[#EAE1D7] text-amber-800 flex items-center justify-center mx-auto shadow-inner">
-                  <UploadCloud className="w-8 h-8" />
+                  <Images className="w-8 h-8" />
                 </div>
                 <div className="max-w-md mx-auto space-y-1.5">
                   <h3 className="text-base sm:text-lg font-black text-stone-900">
-                    تصویری در این دسته‌بندی وجود ندارد
+                    تصویری در این دسته‌بندی یافت نشد
                   </h3>
                   <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                    می‌توانید عکس‌های جدید سوله را بارگذاری کنید یا با کلیک بر روی دکمه زیر، ۱۶ عکس سئو شده پیش‌فرض را بازیابی نمایید.
+                    جهت مشاهده سایر نمونه‌کارهای تصویری کارگاه و پروژه‌ها، فیلتر دسته‌بندی را تغییر دهید.
                   </p>
                 </div>
                 <div className="pt-2 flex items-center justify-center gap-3 flex-wrap">
                   <button
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => setActiveCategory('all')}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
                   >
-                    <Plus className="w-4 h-4" />
-                    <span>بارگذاری عکس جدید</span>
+                    <Images className="w-4 h-4" />
+                    <span>مشاهده تمام تصاویر گالری</span>
                   </button>
-
-                  {onResetDefaultImages && (
-                    <button
-                      onClick={onResetDefaultImages}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#D8CEBF] bg-white hover:bg-stone-50 text-stone-800 font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer"
-                    >
-                      <RotateCcw className="w-4 h-4 text-amber-700" />
-                      <span>بازیابی ۱۶ عکس سئو شده</span>
-                    </button>
-                  )}
                 </div>
               </div>
             )}
