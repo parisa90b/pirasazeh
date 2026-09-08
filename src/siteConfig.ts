@@ -52,7 +52,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 28,
     length: 70,
     height: 8.5,
-    imageUrl: '/images/projects/1.jfif',
+    imageUrl: '/images/projects/1.svg',
     description: 'طراحی، محاسبات و ساخت اسکلت فلزی فروشگاه بزرگ رفاه کارون در اهواز با دهانه باز ۲۸ متری و سقف دکوراتیو عایق‌بندی شده.'
   },
   {
@@ -65,7 +65,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 45,
     length: 120,
     height: 16.0,
-    imageUrl: '/images/projects/6.jfif',
+    imageUrl: '/images/projects/6.svg',
     description: 'مشارکت در طراحی محاسباتی، ساخت قطعات و نظارت مهندسی استراکچر سالن خط تولید غول هواپیماسازی جهان (بوئینگ).'
   },
   {
@@ -78,7 +78,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 32,
     length: 90,
     height: 12.0,
-    imageUrl: '/images/projects/7.jfif',
+    imageUrl: '/images/projects/7.svg',
     description: 'ساخت و نصب سوله و کارگاه تخصصی صنعتی شرکت مهندسی و ساخت تأسیسات دریایی در خرمشهر با مقاومت در برابر رطوبت شرجی و نمک.'
   },
   {
@@ -91,7 +91,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 36,
     length: 50,
     height: 9.5,
-    imageUrl: '/images/projects/10.jfif',
+    imageUrl: '/images/projects/10.svg',
     description: 'طراحی و ساخت سوله تخصصی آشیانه هلیکوپتر سازمان آب و برق خوزستان با دهانه ۳۶ متر بدون ستون مزاحم در کوی بوستان اهواز.'
   },
   {
@@ -104,7 +104,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 30,
     length: 60,
     height: 10.0,
-    imageUrl: '/images/projects/5.jfif',
+    imageUrl: '/images/projects/5.svg',
     description: 'احداث سالن ورزشی چندمنظوره بانوان در دانشگاه شهید چمران اهواز با تهویه مطبوع، نورگیرهای استاندارد و شیب متقارن سقف.'
   },
   {
@@ -117,7 +117,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 26,
     length: 52,
     height: 8.5,
-    imageUrl: '/images/projects/9.jfif',
+    imageUrl: '/images/projects/9.svg',
     description: 'طراحی و اجرای اسکلت فلزی استخر سرپوشیده با متریال ضدزنگ و مقاوم در برابر بخارات کلر و رطوبت ۱۰۰ درصدی فضاهای آبی.'
   },
   {
@@ -130,7 +130,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 30,
     length: 80,
     height: 11.0,
-    imageUrl: '/images/projects/11.jfif',
+    imageUrl: '/images/projects/11.svg',
     description: 'ساخت و نصب سالن تخصصی تعمیرات و نگهداری کانتینرهای دریایی شرکت کشتیرانی والفجر ۸ با نشیمن جرثقیل سقفی سنگین در بندر ماهشهر.'
   },
   {
@@ -143,7 +143,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 32,
     length: 65,
     height: 10.5,
-    imageUrl: '/images/projects/13.jfif',
+    imageUrl: '/images/projects/13.svg',
     description: 'طراحی محاسباتی و احداث سالن بزرگ ورزشی چندمنظوره سرپوشیده اداره کل تربیت بدنی استان خوزستان در مجتمع قدس اهواز.'
   },
   {
@@ -156,7 +156,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 22,
     length: 60,
     height: 7.5,
-    imageUrl: '/images/projects/2.jfif',
+    imageUrl: '/images/projects/2.svg',
     description: 'طراحی و ساخت خط تولید، قالب‌گیری و انبار مواد اولیه کارخانه فوم و یونولیت ساختمانی در شهرستان ایذه.'
   },
   {
@@ -169,7 +169,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 24,
     length: 72,
     height: 8.0,
-    imageUrl: '/images/projects/Picture1.jpg',
+    imageUrl: '/images/projects/Picture1.svg',
     description: 'احداث کامل اسکلت فلزی، سالن تولید و خط بسته‌بندی کارخانه تولید انواع الکترودهای جوشکاری صنعتی در امیدیه.'
   },
   {
@@ -182,7 +182,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 28,
     length: 84,
     height: 11.5,
-    imageUrl: '/images/projects/Picture2.jpg',
+    imageUrl: '/images/projects/Picture2.svg',
     description: 'طراحی، ساخت و مونتاژ سوله انبار مادر توزیع کلاف و ورق‌های فولادی در اهواز با ظرفیت باربری تیرهای حمال سنگین.'
   },
   {
@@ -195,7 +195,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 34,
     length: 70,
     height: 9.5,
-    imageUrl: '/images/projects/3.jfif',
+    imageUrl: '/images/projects/3.svg',
     description: 'طراحی و اجرای مجتمع ورزشی مجهز شامل زمین سرپوشیده فوتبال و استخر مدرن با ساختار پیچ و مهره‌ای مقاوم در اهواز.'
   },
   {
@@ -208,7 +208,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 18,
     length: 30,
     height: 3.8,
-    imageUrl: '/images/projects/6e2a2ddd-2d11-40ae-98c9-615d429c9d67.jfif',
+    imageUrl: '/images/projects/6e2a2ddd-2d11-40ae-98c9-615d429c9d67.svg',
     description: 'مشاوره، طراحی، ساخت و نصب طبقه فوقانی (طبقه ۴) ساختمان شرکت ساز آب پردازان با سیستم قاب‌های پیچ و مهره‌ای جهت کاربری اداری مهندسی.'
   },
   {
@@ -221,7 +221,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 26,
     length: 65,
     height: 9.0,
-    imageUrl: '/images/projects/ad6b5d3f-19cf-46ff-a6b1-5c130a2c8dee.jfif',
+    imageUrl: '/images/projects/ad6b5d3f-19cf-46ff-a6b1-5c130a2c8dee.svg',
     description: 'احداث سالن‌های کارگاه‌های مکانیک، عمران و سالن ورزشی سرپوشیده دانشجویی در پردیس دانشگاه آزاد واحد اهواز.'
   },
   {
@@ -234,7 +234,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 25,
     length: 75,
     height: 8.5,
-    imageUrl: '/images/projects/d18d29a5-681e-4282-9c53-f481b7378972.jfif',
+    imageUrl: '/images/projects/d18d29a5-681e-4282-9c53-f481b7378972.svg',
     description: 'ساخت قطعات در کارگاه شیبان اهواز و ترابری و نصب سالن‌های خط تولید و انبار شرکت آسیا کاوان در جزیره قشم.'
   },
   {
@@ -247,7 +247,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 30,
     length: 60,
     height: 9.0,
-    imageUrl: '/images/projects/I380X253_035307977168.jpg',
+    imageUrl: '/images/projects/I380X253_035307977168.svg',
     description: 'طراحی محاسباتی، ساخت قطعات و نصب استخر سرپوشیده طوبی اهواز جنب استانداری به عرض ۳۰ متر و طول ۶۰ متر با فریم‌های قوسی یکپارچه.'
   },
   {
@@ -260,7 +260,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     width: 24,
     length: 60,
     height: 11.0,
-    imageUrl: '/images/projects/1.jfif',
+    imageUrl: '/images/projects/1.svg',
     description: 'طراحی و ساخت سوله سیلو و انبار نگهداری مکانیزه غلات آقای شحیطاوی در اهواز با ارتفاع تاج ۱۱ متر و عایق رطوبتی کف و بدنه.'
   }
 ];
@@ -391,168 +391,7 @@ export const BRIDGE_PROJECTS_DATA: BridgeProjectItem[] = [
   }
 ];
 
-export const DEFAULT_GALLERY_IMAGES: GalleryImageItem[] = [
-  {
-    id: 'sole-gallery-1',
-    imageUrl: '/images/projects/1.jfif',
-    originalFileName: '1.jfif',
-    title: 'اسکلت فلزی سوله صنعتی دهانه عریض سوله پیراسازه اهواز',
-    altText: 'سوله صنعتی دهانه عریض تیرورقی با ستون‌های سنگین و فریم‌های استاندارد در اهواز - سوله پیراسازه',
-    category: 'سوله صنعتی',
-    location: 'اهواز، خوزستان',
-    dimensions: 'دهانه ۲۴ متر - ارتفاع تاج ۹ متر'
-  },
-  {
-    id: 'sole-gallery-2',
-    imageUrl: '/images/projects/2.jfif',
-    originalFileName: '2.jfif',
-    title: 'پوشش سقف و استراکچر سوله صنعتی پیراسازه در خوزستان',
-    altText: 'نصب و اجرای عایق پشم شیشه و ورق گالوانیزه سقف سوله در خوزستان - شرکت پیراسازه',
-    category: 'پوشش سقف',
-    location: 'خوزستان',
-    dimensions: 'دهانه ۲۰ متر'
-  },
-  {
-    id: 'sole-gallery-3',
-    imageUrl: '/images/projects/3.jfif',
-    originalFileName: '3.jfif',
-    title: 'پوشش سقف سوله و بادبندهای سقفی کارگاه پیراسازه',
-    altText: 'اجرای لایه‌های پوشش سقف سوله و پرلین‌های Z ضدزنگ در اهواز - سوله پیراسازه',
-    category: 'پوشش سقف',
-    location: 'اهواز',
-    dimensions: 'شیب استاندارد ۲۰ درصد'
-  },
-  {
-    id: 'sole-gallery-4',
-    imageUrl: '/images/projects/5.jfif',
-    originalFileName: '5.jfif',
-    title: 'ساخت و نصب اسکلت فلزی سوله چند دهانه پیراسازه در اهواز',
-    altText: 'مونتاژ اسکلت فلزی سوله صنعتی چند دهانه در حومه اهواز - سوله پیراسازه شیبان',
-    category: 'سوله چند دهانه',
-    location: 'اهواز، خوزستان',
-    dimensions: 'دهانه دوبل ۲×۱۸ متر'
-  },
-  {
-    id: 'sole-gallery-5',
-    imageUrl: '/images/projects/6.jfif',
-    originalFileName: '6.jfif',
-    title: 'نصب تاج و رفترهای سوله تیرورقی توسط اکیپ فنی پیراسازه',
-    altText: 'مرحله نصب تاج سوله تیرورقی و بولتینگ فریم‌ها توسط اکیپ نصب سوله پیراسازه در اهواز',
-    category: 'نصب و مونتاژ',
-    location: 'اهواز',
-    dimensions: 'ارتفاع تاج ۱۰ متر'
-  },
-  {
-    id: 'sole-gallery-6',
-    imageUrl: '/images/projects/6e2a2ddd-2d11-40ae-98c9-615d429c9d67.jfif',
-    originalFileName: '6e2a2ddd-2d11-40ae-98c9-615d429c9d67.jfif',
-    title: 'مونتاژ پیچ و مهره‌ای فریم‌های سوله استاندارد مبحث ۱۰ در اهواز',
-    altText: 'اتصالات اصطکاکی پیچ و مهره‌ای گرید 10.9 رفترهای سوله صنعتی - سوله پیراسازه اهواز',
-    category: 'مونتاژ فریم',
-    location: 'اهواز',
-    dimensions: 'پیچ‌های پیش‌تنیده HV'
-  },
-  {
-    id: 'sole-gallery-7',
-    imageUrl: '/images/projects/7.jfif',
-    originalFileName: '7.jfif',
-    title: 'بادبندهای ضربدری و استرات‌های سازه سوله صنعتی سنگین پیراسازه',
-    altText: 'اجرای بادبندهای لوله‌ای و ضربدری سازه سوله صنعتی سنگین مقاوم در برابر زلزله و باد شدید خوزستان',
-    category: 'استراکچر سنگین',
-    location: 'خوزستان',
-    dimensions: 'طول سالن ۷۲ متر'
-  },
-  {
-    id: 'sole-gallery-8',
-    imageUrl: '/images/projects/9.jfif',
-    originalFileName: '9.jfif',
-    title: 'سوله تیرورقی تک دهانه صنعتی پیراسازه در استان خوزستان',
-    altText: 'طراحی و ساخت سوله تک دهانه استاندارد با آبروی لندنی در استان خوزستان - پیراسازه',
-    category: 'سوله تیرورقی',
-    location: 'خوزستان',
-    dimensions: 'دهانه ۲۱ متر'
-  },
-  {
-    id: 'sole-gallery-9',
-    imageUrl: '/images/projects/10.jfif',
-    originalFileName: '10.jfif',
-    title: 'طراحی و ساخت سوله انبار چند دهانه کالا در شهرک صنعتی اهواز',
-    altText: 'احداث سوله انبار بزرگ صنعتی با دهانه‌های موازی در شهرک صنعتی اهواز - سوله پیراسازه',
-    category: 'سوله انبار',
-    location: 'شهرک صنعتی اهواز',
-    dimensions: 'مساحت ۲۴۰۰ مترمربع'
-  },
-  {
-    id: 'sole-gallery-10',
-    imageUrl: '/images/projects/11.jfif',
-    originalFileName: '11.jfif',
-    title: 'نصب ستون‌ها و نشیمن پل جرثقیل سقفی سوله صنعتی',
-    altText: 'ستون‌های سنگین سوله صنعتی مجهز به براکت و تیر حمال جرثقیل سقفی - سوله پیراسازه اهواز',
-    category: 'سوله جرثقیل‌دار',
-    location: 'اهواز',
-    dimensions: 'ظرفیت تیر حمال جرثقیل ۱۰ تن'
-  },
-  {
-    id: 'sole-gallery-11',
-    imageUrl: '/images/projects/13.jfif',
-    originalFileName: '13.jfif',
-    title: 'اسکلت فلزی سوله کارگاهی استاندارد احداث شده در اهواز',
-    altText: 'سوله کارگاهی پیش‌ساخته تیرورقی با اتصالات استاندارد در منطقه صنعتی اهواز',
-    category: 'سوله کارگاهی',
-    location: 'اهواز',
-    dimensions: 'دهانه ۱۶ متر'
-  },
-  {
-    id: 'sole-gallery-12',
-    imageUrl: '/images/projects/ad6b5d3f-19cf-46ff-a6b1-5c130a2c8dee.jfif',
-    originalFileName: 'ad6b5d3f-19cf-46ff-a6b1-5c130a2c8dee.jfif',
-    title: 'کارگاه ساخت سوله پیراسازه شیبان اهواز مجهز به جرثقیل سقفی',
-    altText: 'نمای داخلی کارگاه تخصصی ساخت و جوشکاری سوله پیراسازه در شیبان اهواز با جرثقیل سقفی اختصاصی',
-    category: 'کارگاه شیبان',
-    location: 'شیبان، اهواز',
-    dimensions: 'سالن ساخت و مونتاژ مجهز'
-  },
-  {
-    id: 'sole-gallery-13',
-    imageUrl: '/images/projects/d18d29a5-681e-4282-9c53-f481b7378972.jfif',
-    originalFileName: 'd18d29a5-681e-4282-9c53-f481b7378972.jfif',
-    title: 'ستون‌های سوله سندبلاست و رنگ‌آمیزی اپوکسی کارگاه شیبان',
-    altText: 'ستون‌ها و مقاطع فولادی سوله سندبلاست شده SA 2.5 با رنگ‌آمیزی اپوکسی صنعتی در کارگاه شیبان',
-    category: 'رنگ و سندبلاست',
-    location: 'کارگاه شیبان',
-    dimensions: 'رنگ اپوکسی زینک‌ریچ سه لایه'
-  },
-  {
-    id: 'sole-gallery-14',
-    imageUrl: '/images/projects/I380X253_035307977168.jpg',
-    originalFileName: 'I380X253_035307977168.jpg',
-    title: 'سوله صنعتی دو طبقه دارای نیم‌طبقه و بچه سوله در اهواز',
-    altText: 'اسکلت سوله صنعتی با بچه سوله جانبی و نیم‌طبقه اداری در شهرک صنعتی اهواز - شرکت پیراسازه',
-    category: 'نیم‌طبقه و بچه سوله',
-    location: 'شهرک صنعتی اهواز',
-    dimensions: 'سوله دو طبقه اداری-صنعتی'
-  },
-  {
-    id: 'sole-gallery-15',
-    imageUrl: '/images/projects/Picture1.jpg',
-    originalFileName: 'Picture1.jpg',
-    title: 'خط تولید و ساخت سوله و تیرورق استاندارد شرکت پیراسازه',
-    altText: 'سالن مونتاژ، برش پلاسما و جوش زیرپودری سوله پیراسازه در شیبان اهواز با جرثقیل سقفی پیراسازه',
-    category: 'کارگاه شیبان',
-    location: 'کارگاه شیبان اهواز',
-    dimensions: 'ظرفیت ساخت ماهانه ۴۰۰ تن'
-  },
-  {
-    id: 'sole-gallery-16',
-    imageUrl: '/images/projects/Picture2.jpg',
-    originalFileName: 'Picture2.jpg',
-    title: 'سوله صنعتی تیرورقی با پوشش ضدزنگ زینک کرومات در خوزستان',
-    altText: 'سازه سوله صنعتی تیرورقی رنگ‌آمیزی شده با پرایمر ضدزنگ مقاوم در برابر رطوبت و گرما در خوزستان',
-    category: 'پوشش ضدزنگ',
-    location: 'خوزستان',
-    dimensions: 'پوشش زینک کرومات آلکیدی'
-  }
-];
+export const DEFAULT_GALLERY_IMAGES: GalleryImageItem[] = [];
 
 /* -----------------------------------------------------------------------
  * ۳. مقالات بلاگ تخصصی سوله و سازه‌های فلزی

@@ -28,14 +28,28 @@ export function App() {
     return COMPANY_INFO;
   });
 
-  // Gallery images state (16 SEO curated projects)
-  const [galleryImages] = useState<GalleryImageItem[]>(() => {
+  // Gallery images state (only user-uploaded photos, default generated ones removed)
+  const [galleryImages, setGalleryImages] = useState<GalleryImageItem[]>(() => {
     try {
       const saved = localStorage.getItem('solepirasazeh_gallery_images');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+        if (Array.isArray(parsed)) {
+          // Remove any default/generated mock images (e.g. sole-gallery-*, or non-uploaded mock SVGs)
+          const userOnly = parsed.filter((item: GalleryImageItem) => {
+            if (!item || !item.id) return false;
+            if (item.id.startsWith('sole-gallery-')) return false;
+            if (item.imageUrl && item.imageUrl.startsWith('/images/projects/') && !item.id.startsWith('uploaded-')) {
+              return false;
+            }
+            return true;
+          });
+          try {
+            localStorage.setItem('solepirasazeh_gallery_images', JSON.stringify(userOnly));
+          } catch {
+            // ignore
+          }
+          return userOnly;
         }
       }
     } catch {
@@ -43,6 +57,15 @@ export function App() {
     }
     return DEFAULT_GALLERY_IMAGES;
   });
+
+  const handleUpdateGalleryImages = (newImages: GalleryImageItem[]) => {
+    setGalleryImages(newImages);
+    try {
+      localStorage.setItem('solepirasazeh_gallery_images', JSON.stringify(newImages));
+    } catch {
+      // ignore
+    }
+  };
 
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 
@@ -115,6 +138,7 @@ export function App() {
         {/* 4. Projects Gallery (Pure visual gallery without descriptions - SEO optimized) */}
         <ProjectsGallery 
           images={galleryImages}
+          onUpdateImages={handleUpdateGalleryImages}
         />
 
         {/* 5. Custom Quote Form (Direct transmission of dimensions to structural designer via WhatsApp & Bale) */}
