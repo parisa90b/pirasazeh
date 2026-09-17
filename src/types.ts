@@ -131,6 +131,8 @@ export interface StructureTypeItem {
 export interface GoogleSheetsConfig {
   enabled: boolean;
   sheetIdOrUrl: string;
+  gallerySheetUrl?: string;
+  articlesSheetUrl?: string;
   gallerySheetName: string;
   articlesSheetName: string;
   lastSyncTime?: string;

@@ -38,7 +38,31 @@ export const COMPANY_INFO: CompanyConfig = {
 };
 
 /* -----------------------------------------------------------------------
- * ۲. نمونه‌کارها و سوابق اجرایی شاخص شرکت سوله پیراسازه
+ * ۲. تنظیمات اتصال دائمی به گوگل شیت (Google Sheets CMS)
+ * -----------------------------------------------------------------------
+ * 🎯 برای سایت استاتیک (بدون نیاز به پنل ادمین و بدون مصرف هاست):
+ * کافیست لینک شیت گوگل خود را در متغیر sheetIdOrUrl قرار دهید.
+ * از آن پس، به صورت زنده، مقالات و عکس‌های گالری مستقیماً از فایل گوگل شیت
+ * برای تمام بازدیدکنندگان سایت لود می‌شود و هر تغییری در شیت بدهید
+ * خودکار و بدون نیاز به بیلد یا آپلود مجدد کدها در سایت نمایش داده می‌شود.
+ * ----------------------------------------------------------------------- */
+export const DEFAULT_GOOGLE_SHEETS_CONFIG: GoogleSheetsConfig = {
+  enabled: true,
+  // 👈 حالت اول: اگر یک فایل مشترک دارید، یا می‌خواهید هر دو لینک را با کاما جدا کنید:
+  // نمونه دو لینک: 'https://docs.google.com/.../edit?usp=sharing , https://docs.google.com/.../edit?usp=sharing'
+  sheetIdOrUrl: '',
+
+  // 👈 حالت دوم (بسیار تمیزتر): اگر دو فایل جداگانه دارید، لینک هر کدام را جداگانه اینجا بگذارید:
+  gallerySheetUrl: 'https://docs.google.com/spreadsheets/d/1lcHgBye3vnwPBVApkvMnexpbIr6YY9sgItltfvbcdFU/edit?usp=sharing',   // لینک شیت اختصاصی گالری و عکس‌ها
+  articlesSheetUrl: 'https://docs.google.com/spreadsheets/d/1LiP7lPlMV4PNTGbMBgcZDjwkIDGSgkSQWW-AdW07Ts8/edit?usp=sharing',  // لینک شیت اختصاصی مقالات و وبلاگ
+
+  gallerySheetName: 'Gallery',   // نام برگه گالری (یا 'گالری' یا 'Sheet1')
+  articlesSheetName: 'Articles', // نام برگه مقالات (یا 'مقالات' یا 'Sheet1')
+  autoSync: true,                // دریافت خودکار داده‌ها هنگام ورود کاربران به سایت
+};
+
+/* -----------------------------------------------------------------------
+ * ۳. نمونه‌کارها و سوابق اجرایی شاخص شرکت سوله پیراسازه
  * ۱۷ پروژه و سوله معتبر اجرا شده توسط شرکت در اهواز، خوزستان و سایر نقاط
  * ----------------------------------------------------------------------- */
 export const PROJECTS_DATA: ProjectItem[] = [
@@ -753,13 +777,5 @@ export const GOOGLE_SHEETS_TEMPLATE_GUIDE = {
     { key: 'tags', fa: 'برچسب‌ها', desc: 'کلمات کلیدی جدا شده با کاما، مثلاً «سوله, هزینه ساخت, اهواز»' },
     { key: 'content', fa: 'متن_مقاله', desc: 'متن کامل مقاله (پاراگراف‌ها با اینتر جدا شوند)' }
   ]
-};
-
-export const DEFAULT_GOOGLE_SHEETS_CONFIG: GoogleSheetsConfig = {
-  enabled: true,
-  sheetIdOrUrl: '',
-  gallerySheetName: 'گالری',
-  articlesSheetName: 'مقالات',
-  autoSync: true,
 };
 

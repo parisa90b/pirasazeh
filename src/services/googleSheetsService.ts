@@ -1,13 +1,7 @@
 import { GalleryImageItem, BlogPost, GoogleSheetsConfig, GoogleSheetsSyncResult } from '../types';
+import { DEFAULT_GOOGLE_SHEETS_CONFIG } from '../siteConfig';
 
-export const DEFAULT_GOOGLE_SHEETS_CONFIG: GoogleSheetsConfig = {
-  enabled: true,
-  // Sample public sheet or user-defined sheet ID
-  sheetIdOrUrl: '',
-  gallerySheetName: 'Gallery',
-  articlesSheetName: 'Articles',
-  autoSync: true,
-};
+export { DEFAULT_GOOGLE_SHEETS_CONFIG };
 
 const STORAGE_KEY_CONFIG = 'solepirasazeh_sheets_config_v1';
 const STORAGE_KEY_GALLERY = 'solepirasazeh_sheets_gallery_cache_v1';
@@ -29,6 +23,20 @@ export function extractSpreadsheetId(input: string): string {
     return trimmed;
   }
   return trimmed;
+}
+
+/**
+ * Extracts all unique Google Spreadsheet IDs from a string
+ * Supports comma-separated, space-separated, or multiple URLs in text
+ */
+export function extractMultipleSpreadsheetIds(input: string): string[] {
+  if (!input) return [];
+  const matches = [...input.matchAll(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/g)];
+  if (matches.length > 0) {
+    return Array.from(new Set(matches.map(m => m[1])));
+  }
+  const parts = input.split(/[\s,;\n\r]+/).map(p => extractSpreadsheetId(p)).filter(Boolean);
+  return Array.from(new Set(parts));
 }
 
 /**
@@ -126,16 +134,20 @@ export function parseGVizResponse(rawText: string): string[][] | null {
 }
 
 /**
- * Fetches rows from a Google Sheet tab by name or gid
+ * Fetches rows from a Google Sheet tab by name or gid.
+ * If sheetName is omitted or empty, fetches the first sheet tab.
  */
-export async function fetchSheetRows(sheetId: string, sheetName: string): Promise<string[][]> {
+export async function fetchSheetRows(sheetId: string, sheetName?: string): Promise<string[][]> {
   const cleanId = extractSpreadsheetId(sheetId);
   if (!cleanId) {
     throw new Error('شناسه گوگل شیت نامعتبر یا خالی است.');
   }
 
+  const hasSheetName = Boolean(sheetName && sheetName.trim() !== '');
+  const sheetParam = hasSheetName ? `&sheet=${encodeURIComponent(sheetName!.trim())}` : '';
+
   // 1. Try Google Visualization API (JSON endpoint - fast and structured)
-  const gvizUrl = `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+  const gvizUrl = `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:json${sheetParam}`;
   
   try {
     const res = await fetch(gvizUrl);
@@ -155,8 +167,10 @@ export async function fetchSheetRows(sheetId: string, sheetName: string): Promis
   }
 
   // 2. Fallback: Google Sheets CSV Export endpoint
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
-  const altCsvUrl = `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv&sheet=${encodeURIComponent(sheetName)}`;
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:csv${sheetParam}`;
+  const altCsvUrl = hasSheetName
+    ? `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv&sheet=${encodeURIComponent(sheetName!.trim())}`
+    : `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv`;
 
   for (const url of [csvUrl, altCsvUrl]) {
     try {
@@ -173,7 +187,36 @@ export async function fetchSheetRows(sheetId: string, sheetName: string): Promis
     }
   }
 
-  throw new Error(`امکان بازخوانی برگه «${sheetName}» وجود ندارد. لطفاً اطمینان حاصل کنید دسترسی شیت روی «هر کسی که پیوند را دارد (Anyone with the link can view)» تنظیم شده باشد.`);
+  throw new Error(`امکان بازخوانی برگه ${sheetName ? `«${sheetName}»` : 'پیش‌فرض'} وجود ندارد.`);
+}
+
+/**
+ * Tries multiple candidate sheet tab names until one succeeds
+ */
+export async function fetchSheetWithCandidates(sheetId: string, candidates: (string | undefined)[]): Promise<string[][]> {
+  const cleanId = extractSpreadsheetId(sheetId);
+  if (!cleanId) {
+    throw new Error('شناسه گوگل شیت نامعتبر یا خالی است.');
+  }
+
+  // Filter unique candidates
+  const uniqueList: (string | undefined)[] = [];
+  for (const c of candidates) {
+    if (!uniqueList.includes(c)) uniqueList.push(c);
+  }
+
+  for (const name of uniqueList) {
+    try {
+      const rows = await fetchSheetRows(cleanId, name);
+      if (rows && rows.length > 0) {
+        return rows;
+      }
+    } catch {
+      // try next candidate tab
+    }
+  }
+
+  throw new Error(`هیچ‌یک از برگه‌های مشخص‌شده بازخوانی نشدند. لطفاً اطمینان حاصل کنید دسترسی شیت روی «Anyone with the link can view» تنظیم شده باشد.`);
 }
 
 /**
@@ -314,13 +357,26 @@ export function parseArticlesRows(rows: string[][]): BlogPost[] {
 }
 
 /**
- * Synchronizes both Gallery and Articles from the configured Google Sheet
+ * Synchronizes both Gallery and Articles from the configured Google Sheet(s)
+ * Supports:
+ * - Single sheet with 2 tabs ('Gallery' and 'Articles' or 'گالری' and 'مقالات')
+ * - Two separate sheets (via gallerySheetUrl / articlesSheetUrl OR two comma-separated URLs in sheetIdOrUrl)
+ * - Automatic fallback to Sheet1 / first tab if custom names aren't used
  */
 export async function syncAllFromGoogleSheets(
   config: GoogleSheetsConfig
 ): Promise<{ gallery: GalleryImageItem[]; articles: BlogPost[]; result: GoogleSheetsSyncResult }> {
-  const sheetId = extractSpreadsheetId(config.sheetIdOrUrl);
-  if (!sheetId) {
+  const allIds = extractMultipleSpreadsheetIds(config.sheetIdOrUrl || '');
+
+  const gallerySheetId = config.gallerySheetUrl
+    ? extractSpreadsheetId(config.gallerySheetUrl)
+    : (allIds[0] || '');
+
+  const articlesSheetId = config.articlesSheetUrl
+    ? extractSpreadsheetId(config.articlesSheetUrl)
+    : (allIds.length > 1 ? allIds[1] : (allIds[0] || ''));
+
+  if (!gallerySheetId && !articlesSheetId) {
     return {
       gallery: [],
       articles: [],
@@ -337,29 +393,47 @@ export async function syncAllFromGoogleSheets(
   const errors: string[] = [];
 
   // 1. Fetch Gallery
-  try {
-    const galleryRows = await fetchSheetRows(sheetId, config.gallerySheetName || 'Gallery');
-    galleryItems = parseGalleryRows(galleryRows);
-  } catch (err) {
-    // Try Persian tab name as fallback if 'Gallery' was used
+  if (gallerySheetId) {
+    const galleryCandidates = [
+      config.gallerySheetName,
+      'Gallery',
+      'گالری',
+      'پروژه‌ها',
+      'تصاویر',
+      'Sheet1',
+      'Sheet 1',
+      'برگه ۱',
+      'برگه1',
+      '' // first tab
+    ];
+
     try {
-      const galleryRows = await fetchSheetRows(sheetId, 'گالری');
+      const galleryRows = await fetchSheetWithCandidates(gallerySheetId, galleryCandidates);
       galleryItems = parseGalleryRows(galleryRows);
-    } catch {
+    } catch (err) {
       errors.push(`خطا در دریافت برگه گالری: ${(err as Error).message}`);
     }
   }
 
   // 2. Fetch Articles
-  try {
-    const articlesRows = await fetchSheetRows(sheetId, config.articlesSheetName || 'Articles');
-    articlesItems = parseArticlesRows(articlesRows);
-  } catch (err) {
-    // Try Persian tab name as fallback if 'Articles' was used
+  if (articlesSheetId) {
+    const articlesCandidates = [
+      config.articlesSheetName,
+      'Articles',
+      'مقالات',
+      'وبلاگ',
+      'اخبار',
+      'Sheet1',
+      'Sheet 1',
+      'برگه ۱',
+      'برگه1',
+      '' // first tab
+    ];
+
     try {
-      const articlesRows = await fetchSheetRows(sheetId, 'مقالات');
+      const articlesRows = await fetchSheetWithCandidates(articlesSheetId, articlesCandidates);
       articlesItems = parseArticlesRows(articlesRows);
-    } catch {
+    } catch (err) {
       errors.push(`خطا در دریافت برگه مقالات: ${(err as Error).message}`);
     }
   }
@@ -442,6 +516,27 @@ export function loadGoogleSheetsCache(): {
 
 export function loadGoogleSheetsConfig(): GoogleSheetsConfig {
   try {
+    const hasCodeConfig = Boolean(
+      (DEFAULT_GOOGLE_SHEETS_CONFIG.sheetIdOrUrl && DEFAULT_GOOGLE_SHEETS_CONFIG.sheetIdOrUrl.trim() !== '') ||
+      (DEFAULT_GOOGLE_SHEETS_CONFIG.gallerySheetUrl && DEFAULT_GOOGLE_SHEETS_CONFIG.gallerySheetUrl.trim() !== '') ||
+      (DEFAULT_GOOGLE_SHEETS_CONFIG.articlesSheetUrl && DEFAULT_GOOGLE_SHEETS_CONFIG.articlesSheetUrl.trim() !== '')
+    );
+
+    // If configured in siteConfig.ts, it acts as the master config for all visitors
+    if (hasCodeConfig) {
+      const raw = localStorage.getItem(STORAGE_KEY_CONFIG);
+      if (raw) {
+        return { 
+          ...DEFAULT_GOOGLE_SHEETS_CONFIG, 
+          ...JSON.parse(raw), 
+          sheetIdOrUrl: DEFAULT_GOOGLE_SHEETS_CONFIG.sheetIdOrUrl,
+          gallerySheetUrl: DEFAULT_GOOGLE_SHEETS_CONFIG.gallerySheetUrl,
+          articlesSheetUrl: DEFAULT_GOOGLE_SHEETS_CONFIG.articlesSheetUrl,
+        };
+      }
+      return DEFAULT_GOOGLE_SHEETS_CONFIG;
+    }
+
     const raw = localStorage.getItem(STORAGE_KEY_CONFIG);
     if (raw) {
       return { ...DEFAULT_GOOGLE_SHEETS_CONFIG, ...JSON.parse(raw) };
