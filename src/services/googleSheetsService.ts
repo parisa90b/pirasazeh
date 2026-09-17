@@ -225,19 +225,29 @@ export async function fetchSheetWithCandidates(sheetId: string, candidates: (str
 export function parseGalleryRows(rows: string[][]): GalleryImageItem[] {
   if (rows.length < 2) return [];
 
-  const headers = rows[0].map(h => h.toLowerCase().trim());
+  // Clean and normalize headers (remove parentheses, brackets, zero-width chars)
+  const headers = rows[0].map(h => 
+    h.toLowerCase()
+      .replace(/[\(\)\[\]«»]/g, '')
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
 
   // Find column indices with Persian / English aliases
   const findCol = (aliases: string[]): number => {
-    return headers.findIndex(h => aliases.some(a => h === a || h.includes(a)));
+    return headers.findIndex(h => aliases.some(a => {
+      const normA = a.toLowerCase().replace(/[\(\)\[\]«»]/g, '').trim();
+      return h === normA || h.includes(normA) || normA.includes(h);
+    }));
   };
 
-  const imageIdx = findCol(['imageurl', 'image', 'تصویر', 'عکس', 'آدرس_عکس', 'لینک_عکس', 'لینک', 'url']);
-  const titleIdx = findCol(['title', 'عنوان', 'نام', 'نام_پروژه', 'پروژه']);
-  const catIdx = findCol(['category', 'دسته‌بندی', 'دسته', 'نوع']);
-  const locIdx = findCol(['location', 'مکان', 'شهر', 'موقعیت', 'محل_اجرا', 'استان']);
-  const dimIdx = findCol(['dimensions', 'ابعاد', 'دهانه', 'مشخصات', 'متراژ']);
-  const altIdx = findCol(['alttext', 'alt', 'متن_سئو', 'توضیح', 'متن_جایگزین']);
+  const imageIdx = findCol(['imageurl', 'image', 'تصویر', 'عکس', 'لینک عکس', 'لینک_عکس', 'آدرس عکس', 'لینک', 'url']);
+  const titleIdx = findCol(['title', 'عنوان پروژه', 'عنوان', 'نام پروژه', 'نام', 'پروژه']);
+  const catIdx = findCol(['category', 'دسته‌بندی', 'دسته بندی', 'دسته', 'گروه', 'نوع']);
+  const locIdx = findCol(['location', 'شهر و مکان', 'شهر', 'مکان', 'موقعیت', 'محل اجرا', 'استان']);
+  const dimIdx = findCol(['dimensions', 'ابعاد و مشخصات', 'ابعاد', 'مشخصات', 'دهانه', 'متراژ']);
+  const altIdx = findCol(['alttext', 'alt', 'توضیح سئو', 'متن سئو', 'توضیح', 'متن جایگزین', 'متن_جایگزین']);
 
   if (imageIdx === -1) {
     throw new Error('ستون تصویر (imageUrl یا «عکس») در برگه گالری یافت نشد.');
@@ -251,11 +261,30 @@ export function parseGalleryRows(rows: string[][]): GalleryImageItem[] {
     if (!rawImage) continue;
 
     const normalizedImage = normalizeImageUrl(rawImage);
-    const title = titleIdx !== -1 ? row[titleIdx]?.trim() : '';
-    const category = catIdx !== -1 ? row[catIdx]?.trim() : 'سوله صنعتی';
-    const location = locIdx !== -1 ? row[locIdx]?.trim() : 'اهواز، خوزستان';
-    const dimensions = dimIdx !== -1 ? row[dimIdx]?.trim() : '';
-    const altText = altIdx !== -1 ? row[altIdx]?.trim() : (title || 'پروژه سوله پیراسازه');
+    let title = titleIdx !== -1 ? row[titleIdx]?.trim() : '';
+    if (title.startsWith('http://') || title.startsWith('https://') || title.includes('drive.google.com')) {
+      title = '';
+    }
+
+    let category = catIdx !== -1 ? row[catIdx]?.trim() : 'سوله صنعتی';
+    if (category.startsWith('http://') || category.startsWith('https://') || category.includes('drive.google.com')) {
+      category = 'سوله صنعتی';
+    }
+
+    let location = locIdx !== -1 ? row[locIdx]?.trim() : 'اهواز، خوزستان';
+    if (location.startsWith('http://') || location.startsWith('https://') || location.includes('drive.google.com')) {
+      location = 'اهواز، خوزستان';
+    }
+
+    let dimensions = dimIdx !== -1 ? row[dimIdx]?.trim() : '';
+    if (dimensions.startsWith('http://') || dimensions.startsWith('https://') || dimensions.includes('drive.google.com')) {
+      dimensions = '';
+    }
+
+    let altText = altIdx !== -1 ? row[altIdx]?.trim() : '';
+    if (altText.startsWith('http://') || altText.startsWith('https://') || altText.includes('drive.google.com')) {
+      altText = '';
+    }
 
     items.push({
       id: `sheet-gallery-${i}-${Date.now()}`,
@@ -277,22 +306,31 @@ export function parseGalleryRows(rows: string[][]): GalleryImageItem[] {
 export function parseArticlesRows(rows: string[][]): BlogPost[] {
   if (rows.length < 2) return [];
 
-  const headers = rows[0].map(h => h.toLowerCase().trim());
+  const headers = rows[0].map(h => 
+    h.toLowerCase()
+      .replace(/[\(\)\[\]«»]/g, '')
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
 
   const findCol = (aliases: string[]): number => {
-    return headers.findIndex(h => aliases.some(a => h === a || h.includes(a)));
+    return headers.findIndex(h => aliases.some(a => {
+      const normA = a.toLowerCase().replace(/[\(\)\[\]«»]/g, '').trim();
+      return h === normA || h.includes(normA) || normA.includes(h);
+    }));
   };
 
-  const titleIdx = findCol(['title', 'عنوان', 'نام_مقاله', 'تیتر']);
-  const slugIdx = findCol(['slug', 'پیوند', 'اسلاگ', 'شناسه']);
-  const summaryIdx = findCol(['summary', 'excerpt', 'خلاصه', 'چکیده', 'توضیح']);
-  const catIdx = findCol(['category', 'دسته‌بندی', 'دسته', 'گروه']);
-  const readTimeIdx = findCol(['readtime', 'زمان_مطالعه', 'مدت']);
-  const dateIdx = findCol(['date', 'تاریخ', 'زمان_انتشار']);
-  const authorIdx = findCol(['author', 'نویسنده', 'مؤلف']);
-  const imageIdx = findCol(['imageurl', 'image', 'تصویر', 'عکس', 'عکس_شاخص']);
-  const contentIdx = findCol(['content', 'متن', 'محتوا', 'متن_مقاله', 'متن_کامل']);
-  const tagsIdx = findCol(['tags', 'برچسب', 'تگ', 'کلمات_کلیدی']);
+  const titleIdx = findCol(['title', 'عنوان پروژه', 'عنوان', 'نام مقاله', 'نام_مقاله', 'تیتر']);
+  const slugIdx = findCol(['slug', 'پیوند', 'اسلاگ', 'شناسه', 'نام انگلیسی']);
+  const summaryIdx = findCol(['summary', 'excerpt', 'خلاصه', 'چکیده', 'توضیح کوتاه', 'توضیح']);
+  const catIdx = findCol(['category', 'دسته‌بندی', 'دسته بندی', 'دسته', 'گروه']);
+  const readTimeIdx = findCol(['readtime', 'زمان مطالعه', 'زمان_مطالعه', 'مدت مطالعه', 'مدت']);
+  const dateIdx = findCol(['date', 'تاریخ', 'زمان انتشار', 'تاریخ انتشار']);
+  const authorIdx = findCol(['author', 'نویسنده', 'مؤلف', 'نگارنده']);
+  const imageIdx = findCol(['imageurl', 'image', 'تصویر', 'عکس', 'عکس شاخص', 'عکس_شاخص', 'لینک عکس']);
+  const contentIdx = findCol(['content', 'متن', 'محتوا', 'متن مقاله', 'متن_مقاله', 'متن کامل']);
+  const tagsIdx = findCol(['tags', 'برچسب', 'تگ', 'کلمات کلیدی', 'کلمات_کلیدی', 'برچسب‌ها']);
 
   if (titleIdx === -1) {
     throw new Error('ستون عنوان (title یا «عنوان») در برگه مقالات یافت نشد.');

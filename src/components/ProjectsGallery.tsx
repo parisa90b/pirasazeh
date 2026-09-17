@@ -14,7 +14,9 @@ import {
   Scale, 
   ShieldCheck, 
   Zap, 
-  Route 
+  Route,
+  LayoutGrid,
+  Maximize2
 } from 'lucide-react';
 import { GalleryImageItem } from '../types';
 import { PROJECTS_DATA, CRANE_PROJECTS_DATA, BRIDGE_PROJECTS_DATA } from '../siteConfig';
@@ -22,12 +24,10 @@ import { PROJECTS_DATA, CRANE_PROJECTS_DATA, BRIDGE_PROJECTS_DATA } from '../sit
 interface ProjectsGalleryProps {
   images: GalleryImageItem[];
   onUpdateImages?: (newImages: GalleryImageItem[]) => void;
-  isGoogleSheetsSync?: boolean;
 }
 
 export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
   images,
-  isGoogleSheetsSync = false,
 }) => {
   // Active view: 'gallery' (pure visual photos prioritized by default) | 'portfolio' (17 company sheds) | 'bridges' (4 vehicular bridges) | 'cranes' (6 overhead cranes)
   const [activeTab, setActiveTab] = useState<'gallery' | 'portfolio' | 'bridges' | 'cranes'>('gallery');
@@ -39,6 +39,7 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [bridgeSearchQuery, setBridgeSearchQuery] = useState<string>('');
   const [craneSearchQuery, setCraneSearchQuery] = useState<string>('');
+  const [galleryFitMode, setGalleryFitMode] = useState<'cover' | 'contain'>('cover');
 
   // Gallery Categories
   const galleryCategories = [
@@ -255,7 +256,7 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
         {/* ------------------------------------------------------------- */}
         {activeTab === 'gallery' && (
           <div className="relative">
-            {/* Gallery Category Filter Tabs */}
+            {/* Gallery Category Filter Tabs & Image Fit Mode Toggle */}
             {images.length > 0 && (
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
@@ -275,12 +276,35 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
                   ))}
                 </div>
 
-                {isGoogleSheetsSync && (
-                  <div className="mr-auto inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                    <span>متصل به گوگل شیت</span>
-                  </div>
-                )}
+                {/* Sizing / Fit Mode Switcher */}
+                <div className="inline-flex items-center gap-1 bg-[#F2EAE0] p-1 rounded-xl text-xs font-medium border border-[#E4D7C8]">
+                  <button
+                    type="button"
+                    onClick={() => setGalleryFitMode('cover')}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      galleryFitMode === 'cover'
+                        ? 'bg-white text-stone-900 shadow-xs font-bold'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                    title="کادر یکدست و منظم هندسی"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    <span>کادر یکدست</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setGalleryFitMode('contain')}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      galleryFitMode === 'contain'
+                        ? 'bg-white text-stone-900 shadow-xs font-bold'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                    title="نمایش کامل عکس بدون هیچ‌گونه برش و افت کیفیت"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span>نمایش کامل (بدون برش)</span>
+                  </button>
+                </div>
               </div>
             )}
 
@@ -296,12 +320,15 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
                       onClick={() => setSelectedImageIndex(realIndex >= 0 ? realIndex : idx)}
                       itemScope
                       itemType="https://schema.org/ImageObject"
-                      className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-stone-200 border border-[#E0D5C7] shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
+                      className={`group relative aspect-[4/3] rounded-2xl overflow-hidden border border-[#E0D5C7] shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer ${
+                        galleryFitMode === 'contain'
+                          ? 'bg-[#EFE9E2] p-1.5 flex items-center justify-center'
+                          : 'bg-stone-200'
+                      }`}
                     >
                       <img
                         src={img.imageUrl}
-                        alt={img.altText || img.title || 'سوله پیراسازه اهواز'}
-                        title={img.title || 'سوله صنعتی پیراسازه اهواز'}
+                        alt={img.altText && !img.altText.startsWith('http') ? img.altText : (img.title && !img.title.startsWith('http') ? img.title : 'سوله پیراسازه اهواز')}
                         loading={idx < 4 ? 'eager' : 'lazy'}
                         decoding="async"
                         fetchPriority={idx < 4 ? 'high' : 'auto'}
@@ -320,23 +347,27 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
                             }
                           }
                         }}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        className={`w-full h-full transition-transform duration-500 ease-out ${
+                          galleryFitMode === 'contain'
+                            ? 'object-contain group-hover:scale-102'
+                            : 'object-cover group-hover:scale-105'
+                        }`}
                       />
 
                       {/* Schema hidden microdata for SEO spiders */}
-                      <meta itemProp="name" content={img.title || 'سوله صنعتی پیراسازه اهواز'} />
-                      <meta itemProp="caption" content={img.altText || img.title || 'سوله پیراسازه'} />
-                      <meta itemProp="contentLocation" content={img.location || 'اهواز، خوزستان'} />
+                      <meta itemProp="name" content={img.title && !img.title.startsWith('http') ? img.title : 'سوله صنعتی پیراسازه اهواز'} />
+                      <meta itemProp="caption" content={img.altText && !img.altText.startsWith('http') ? img.altText : 'سوله پیراسازه'} />
+                      <meta itemProp="contentLocation" content={img.location && !img.location.startsWith('http') ? img.location : 'اهواز، خوزستان'} />
 
                       {/* Subtle hover overlay with zoom icon */}
-                      <div className="absolute inset-0 bg-stone-900/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="absolute inset-0 bg-stone-900/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                         <div className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-md text-amber-900 flex items-center justify-center shadow-lg transform scale-75 group-hover:scale-100 transition-transform">
                           <ZoomIn className="w-5 h-5" />
                         </div>
                       </div>
 
                       {/* Category badge on hover (compact pill) */}
-                      {img.category && (
+                      {img.category && !img.category.startsWith('http') && (
                         <div className="absolute bottom-2 right-2 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-sm text-white text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                           {img.category}
                         </div>
@@ -870,7 +901,11 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
             <div className="text-right">
               <h4 className="text-sm sm:text-base font-bold text-stone-100 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>{images[selectedImageIndex].title || 'سوله پیراسازه اهواز'}</span>
+                <span>
+                  {images[selectedImageIndex].title && !images[selectedImageIndex].title.startsWith('http')
+                    ? images[selectedImageIndex].title
+                    : 'سوله پیراسازه اهواز'}
+                </span>
               </h4>
               {images[selectedImageIndex].location && (
                 <p className="text-[11px] sm:text-xs text-stone-400 flex items-center gap-1 mt-0.5">

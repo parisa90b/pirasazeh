@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { COMPANY_INFO, DEFAULT_GALLERY_IMAGES, BLOG_POSTS_DATA } from './siteConfig';
-import { CompanyConfig, GalleryImageItem, BlogPost, GoogleSheetsConfig, GoogleSheetsSyncResult } from './types';
+import { CompanyConfig, GalleryImageItem, BlogPost, GoogleSheetsConfig } from './types';
 import { 
   loadGoogleSheetsConfig, 
-  saveGoogleSheetsConfig, 
   loadGoogleSheetsCache, 
   syncAllFromGoogleSheets 
 } from './services/googleSheetsService';
@@ -19,25 +18,12 @@ import { FaqSection } from './components/FaqSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { FloatingActionDock } from './components/FloatingActionDock';
-import { ContentEditorModal } from './components/ContentEditorModal';
 
 export function App() {
-  const [config, setConfig] = useState<CompanyConfig>(() => {
-    try {
-      const saved = localStorage.getItem('solepirasazeh_company_config');
-      if (saved) {
-        return { ...COMPANY_INFO, ...JSON.parse(saved) };
-      }
-    } catch {
-      // fallback to default
-    }
-    return COMPANY_INFO;
-  });
+  const [config] = useState<CompanyConfig>(() => COMPANY_INFO);
 
-  // Google Sheets CMS Configuration state
-  const [sheetsConfig, setSheetsConfig] = useState<GoogleSheetsConfig>(() => loadGoogleSheetsConfig());
-  const [isSyncingSheets, setIsSyncingSheets] = useState(false);
-  const [sheetsSyncResult, setSheetsSyncResult] = useState<GoogleSheetsSyncResult | null>(null);
+  // Google Sheets CMS Configuration state (siteConfig.ts is the master source of truth)
+  const [sheetsConfig] = useState<GoogleSheetsConfig>(() => loadGoogleSheetsConfig());
 
   // Gallery images state (cached from Google Sheets or fallback to real project photos)
   const [galleryImages, setGalleryImages] = useState<GalleryImageItem[]>(() => {
@@ -68,112 +54,25 @@ export function App() {
     return BLOG_POSTS_DATA;
   });
 
-  const handleUpdateGalleryImages = (newImages: GalleryImageItem[]) => {
-    setGalleryImages(newImages);
-    try {
-      localStorage.setItem('solepirasazeh_gallery_images_v3', JSON.stringify(newImages));
-    } catch {
-      // ignore
-    }
-  };
-
-  const handleSaveSheetsConfig = (newSheetsConfig: GoogleSheetsConfig) => {
-    setSheetsConfig(newSheetsConfig);
-    saveGoogleSheetsConfig(newSheetsConfig);
-  };
-
-  const handleSyncSheetsNow = async (): Promise<GoogleSheetsSyncResult> => {
-    if (!sheetsConfig.sheetIdOrUrl) {
-      const fail: GoogleSheetsSyncResult = {
-        success: false,
-        message: 'لطفاً ابتدا لینک یا شناسه گوگل شیت را وارد فرمایید.'
-      };
-      setSheetsSyncResult(fail);
-      return fail;
-    }
-
-    setIsSyncingSheets(true);
-    try {
-      const { gallery, articles, result } = await syncAllFromGoogleSheets(sheetsConfig);
-      if (result.success) {
-        if (gallery.length > 0) setGalleryImages(gallery);
-        if (articles.length > 0) setBlogPosts(articles);
-      }
-      setSheetsSyncResult(result);
-      return result;
-    } catch (err) {
-      const errRes: GoogleSheetsSyncResult = {
-        success: false,
-        message: (err as Error).message || 'خطا در ارتباط با گوگل شیت',
-        error: String(err)
-      };
-      setSheetsSyncResult(errRes);
-      return errRes;
-    } finally {
-      setIsSyncingSheets(false);
-    }
-  };
-
-  // Background auto-sync on mount if enabled and has sheet ID
+  // Background auto-sync on mount if enabled and has sheet ID or URLs
   useEffect(() => {
-    if (sheetsConfig.enabled && sheetsConfig.sheetIdOrUrl && sheetsConfig.autoSync) {
+    const hasSheets = Boolean(
+      sheetsConfig.enabled && 
+      sheetsConfig.autoSync && 
+      (sheetsConfig.sheetIdOrUrl || sheetsConfig.gallerySheetUrl || sheetsConfig.articlesSheetUrl)
+    );
+
+    if (hasSheets) {
       syncAllFromGoogleSheets(sheetsConfig).then(({ gallery, articles, result }) => {
         if (result.success) {
           if (gallery.length > 0) setGalleryImages(gallery);
           if (articles.length > 0) setBlogPosts(articles);
-          setSheetsSyncResult(result);
         }
-      }).catch(() => {
-        // silent fail to avoid interrupting user experience
+      }).catch((err) => {
+        console.warn('Google Sheets sync notice:', err);
       });
     }
-  }, []);
-
-  const isGoogleSheetsActive = Boolean(
-    sheetsConfig.enabled && 
-    sheetsConfig.sheetIdOrUrl && 
-    (sheetsSyncResult?.success || Boolean(loadGoogleSheetsCache().lastSyncTime))
-  );
-
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-
-  // Hidden admin triggers: URL query ?admin, hash #admin, or Ctrl+Shift+E
-  useEffect(() => {
-    const checkUrlAdmin = () => {
-      if (
-        window.location.hash === '#admin' || 
-        window.location.search.includes('admin') ||
-        window.location.search.includes('edit')
-      ) {
-        setIsEditorOpen(true);
-      }
-    };
-    checkUrlAdmin();
-    window.addEventListener('hashchange', checkUrlAdmin);
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl + Shift + E or Cmd + Shift + E to toggle secret editor
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
-        e.preventDefault();
-        setIsEditorOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('hashchange', checkUrlAdmin);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-
-  const handleSaveConfig = (newConfig: CompanyConfig) => {
-    setConfig(newConfig);
-    try {
-      localStorage.setItem('solepirasazeh_company_config', JSON.stringify(newConfig));
-    } catch {
-      // ignore
-    }
-  };
+  }, [sheetsConfig]);
 
   const scrollToQuoteForm = () => {
     const el = document.getElementById('quote-form');
@@ -206,8 +105,6 @@ export function App() {
         {/* 4. Projects Gallery (Pure visual gallery without descriptions - SEO optimized) */}
         <ProjectsGallery 
           images={galleryImages}
-          onUpdateImages={handleUpdateGalleryImages}
-          isGoogleSheetsSync={isGoogleSheetsActive}
         />
 
         {/* 5. Custom Quote Form (Direct transmission of dimensions to structural designer via WhatsApp & Bale) */}
@@ -224,7 +121,6 @@ export function App() {
         {/* 8. Engineering Blog & SEO Articles */}
         <BlogSection 
           posts={blogPosts}
-          isGoogleSheetsSync={isGoogleSheetsActive}
         />
 
         {/* 9. SEO FAQs Section */}
@@ -240,26 +136,12 @@ export function App() {
       {/* 11. Footer */}
       <Footer 
         config={config}
-        onSecretAdminOpen={() => setIsEditorOpen(true)}
       />
 
       {/* 12. Floating Quick Contact Dock (Mobile & Desktop) */}
       <FloatingActionDock 
         config={config}
         onOpenQuoteForm={scrollToQuoteForm}
-      />
-
-      {/* 13. Visual Content & Contacts Editor Modal */}
-      <ContentEditorModal 
-        isOpen={isEditorOpen}
-        onClose={() => setIsEditorOpen(false)}
-        config={config}
-        onSave={handleSaveConfig}
-        sheetsConfig={sheetsConfig}
-        onSaveSheetsConfig={handleSaveSheetsConfig}
-        onSyncSheetsNow={handleSyncSheetsNow}
-        syncStatus={sheetsSyncResult}
-        isSyncing={isSyncingSheets}
       />
 
     </div>

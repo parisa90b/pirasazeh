@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Building2, 
   Phone, 
@@ -13,27 +13,11 @@ import { CompanyConfig } from '../types';
 
 interface FooterProps {
   config: CompanyConfig;
-  onSecretAdminOpen?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ config, onSecretAdminOpen }) => {
-  const [clickCount, setClickCount] = useState(0);
-
+export const Footer: React.FC<FooterProps> = ({ config }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Discreet trigger: clicking copyright 3 times opens admin panel
-  const handleCopyrightClick = () => {
-    if (!onSecretAdminOpen) return;
-    const nextCount = clickCount + 1;
-    if (nextCount >= 3) {
-      onSecretAdminOpen();
-      setClickCount(0);
-    } else {
-      setClickCount(nextCount);
-      setTimeout(() => setClickCount(0), 2000);
-    }
   };
 
   return (
@@ -161,11 +145,7 @@ export const Footer: React.FC<FooterProps> = ({ config, onSecretAdminOpen }) => 
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
-          <div 
-            onClick={handleCopyrightClick}
-            className="cursor-default select-none transition-colors hover:text-stone-400"
-            title=""
-          >
+          <div className="select-none text-stone-400">
             © کلیه حقوق مادی و معنوی متعلق به {config.companyName} می‌باشد. طراحی مهندسی طبق آخرین ضوابط مبحث ۶ و ۱۰ مقررات ملی ساختمان.
           </div>
 
