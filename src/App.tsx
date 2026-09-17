@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
-import { COMPANY_INFO, DEFAULT_GALLERY_IMAGES } from './siteConfig';
-import { CompanyConfig, GalleryImageItem } from './types';
+import { COMPANY_INFO, DEFAULT_GALLERY_IMAGES, BLOG_POSTS_DATA } from './siteConfig';
+import { CompanyConfig, GalleryImageItem, BlogPost, GoogleSheetsConfig, GoogleSheetsSyncResult } from './types';
+import { 
+  loadGoogleSheetsConfig, 
+  saveGoogleSheetsConfig, 
+  loadGoogleSheetsCache, 
+  syncAllFromGoogleSheets 
+} from './services/googleSheetsService';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { TrustBadges } from './components/TrustBadges';
@@ -28,28 +34,23 @@ export function App() {
     return COMPANY_INFO;
   });
 
-  // Gallery images state (only user-uploaded photos, default generated ones removed)
+  // Google Sheets CMS Configuration state
+  const [sheetsConfig, setSheetsConfig] = useState<GoogleSheetsConfig>(() => loadGoogleSheetsConfig());
+  const [isSyncingSheets, setIsSyncingSheets] = useState(false);
+  const [sheetsSyncResult, setSheetsSyncResult] = useState<GoogleSheetsSyncResult | null>(null);
+
+  // Gallery images state (cached from Google Sheets or fallback to real project photos)
   const [galleryImages, setGalleryImages] = useState<GalleryImageItem[]>(() => {
+    const cached = loadGoogleSheetsCache();
+    if (cached.gallery && cached.gallery.length > 0) {
+      return cached.gallery;
+    }
     try {
-      const saved = localStorage.getItem('solepirasazeh_gallery_images');
+      const saved = localStorage.getItem('solepirasazeh_gallery_images_v3');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          // Remove any default/generated mock images (e.g. sole-gallery-*, or non-uploaded mock SVGs)
-          const userOnly = parsed.filter((item: GalleryImageItem) => {
-            if (!item || !item.id) return false;
-            if (item.id.startsWith('sole-gallery-')) return false;
-            if (item.imageUrl && item.imageUrl.startsWith('/images/projects/') && !item.id.startsWith('uploaded-')) {
-              return false;
-            }
-            return true;
-          });
-          try {
-            localStorage.setItem('solepirasazeh_gallery_images', JSON.stringify(userOnly));
-          } catch {
-            // ignore
-          }
-          return userOnly;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
         }
       }
     } catch {
@@ -58,14 +59,81 @@ export function App() {
     return DEFAULT_GALLERY_IMAGES;
   });
 
+  // Blog posts state (cached from Google Sheets or fallback to engineering articles)
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(() => {
+    const cached = loadGoogleSheetsCache();
+    if (cached.articles && cached.articles.length > 0) {
+      return cached.articles;
+    }
+    return BLOG_POSTS_DATA;
+  });
+
   const handleUpdateGalleryImages = (newImages: GalleryImageItem[]) => {
     setGalleryImages(newImages);
     try {
-      localStorage.setItem('solepirasazeh_gallery_images', JSON.stringify(newImages));
+      localStorage.setItem('solepirasazeh_gallery_images_v3', JSON.stringify(newImages));
     } catch {
       // ignore
     }
   };
+
+  const handleSaveSheetsConfig = (newSheetsConfig: GoogleSheetsConfig) => {
+    setSheetsConfig(newSheetsConfig);
+    saveGoogleSheetsConfig(newSheetsConfig);
+  };
+
+  const handleSyncSheetsNow = async (): Promise<GoogleSheetsSyncResult> => {
+    if (!sheetsConfig.sheetIdOrUrl) {
+      const fail: GoogleSheetsSyncResult = {
+        success: false,
+        message: 'لطفاً ابتدا لینک یا شناسه گوگل شیت را وارد فرمایید.'
+      };
+      setSheetsSyncResult(fail);
+      return fail;
+    }
+
+    setIsSyncingSheets(true);
+    try {
+      const { gallery, articles, result } = await syncAllFromGoogleSheets(sheetsConfig);
+      if (result.success) {
+        if (gallery.length > 0) setGalleryImages(gallery);
+        if (articles.length > 0) setBlogPosts(articles);
+      }
+      setSheetsSyncResult(result);
+      return result;
+    } catch (err) {
+      const errRes: GoogleSheetsSyncResult = {
+        success: false,
+        message: (err as Error).message || 'خطا در ارتباط با گوگل شیت',
+        error: String(err)
+      };
+      setSheetsSyncResult(errRes);
+      return errRes;
+    } finally {
+      setIsSyncingSheets(false);
+    }
+  };
+
+  // Background auto-sync on mount if enabled and has sheet ID
+  useEffect(() => {
+    if (sheetsConfig.enabled && sheetsConfig.sheetIdOrUrl && sheetsConfig.autoSync) {
+      syncAllFromGoogleSheets(sheetsConfig).then(({ gallery, articles, result }) => {
+        if (result.success) {
+          if (gallery.length > 0) setGalleryImages(gallery);
+          if (articles.length > 0) setBlogPosts(articles);
+          setSheetsSyncResult(result);
+        }
+      }).catch(() => {
+        // silent fail to avoid interrupting user experience
+      });
+    }
+  }, []);
+
+  const isGoogleSheetsActive = Boolean(
+    sheetsConfig.enabled && 
+    sheetsConfig.sheetIdOrUrl && 
+    (sheetsSyncResult?.success || Boolean(loadGoogleSheetsCache().lastSyncTime))
+  );
 
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 
@@ -139,6 +207,7 @@ export function App() {
         <ProjectsGallery 
           images={galleryImages}
           onUpdateImages={handleUpdateGalleryImages}
+          isGoogleSheetsSync={isGoogleSheetsActive}
         />
 
         {/* 5. Custom Quote Form (Direct transmission of dimensions to structural designer via WhatsApp & Bale) */}
@@ -153,7 +222,10 @@ export function App() {
         <ComparisonTable />
 
         {/* 8. Engineering Blog & SEO Articles */}
-        <BlogSection />
+        <BlogSection 
+          posts={blogPosts}
+          isGoogleSheetsSync={isGoogleSheetsActive}
+        />
 
         {/* 9. SEO FAQs Section */}
         <FaqSection />
@@ -183,6 +255,11 @@ export function App() {
         onClose={() => setIsEditorOpen(false)}
         config={config}
         onSave={handleSaveConfig}
+        sheetsConfig={sheetsConfig}
+        onSaveSheetsConfig={handleSaveSheetsConfig}
+        onSyncSheetsNow={handleSyncSheetsNow}
+        syncStatus={sheetsSyncResult}
+        isSyncing={isSyncingSheets}
       />
 
     </div>

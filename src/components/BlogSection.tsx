@@ -11,14 +11,24 @@ import {
 import { BlogPost } from '../types';
 import { BLOG_POSTS_DATA } from '../siteConfig';
 
-export const BlogSection: React.FC = () => {
+interface BlogSectionProps {
+  posts?: BlogPost[];
+  isGoogleSheetsSync?: boolean;
+}
+
+export const BlogSection: React.FC<BlogSectionProps> = ({
+  posts,
+  isGoogleSheetsSync = false
+}) => {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const allTags = Array.from(new Set(BLOG_POSTS_DATA.flatMap((p) => p.tags)));
+  const activePosts = posts && posts.length > 0 ? posts : BLOG_POSTS_DATA;
 
-  const filteredPosts = BLOG_POSTS_DATA.filter((post) => {
+  const allTags = Array.from(new Set(activePosts.flatMap((p) => p.tags)));
+
+  const filteredPosts = activePosts.filter((post) => {
     const matchesTag = selectedTag ? post.tags.includes(selectedTag) : true;
     const matchesSearch = searchQuery
       ? post.title.includes(searchQuery) || post.summary.includes(searchQuery)
@@ -35,6 +45,12 @@ export const BlogSection: React.FC = () => {
           <div className="inline-flex items-center gap-2 rounded-full border border-[#D8CEBF] bg-[#F3ECE4] px-4 py-1 text-xs font-bold text-amber-900 mb-3 shadow-sm">
             <BookOpen className="w-3.5 h-3.5 text-amber-700" />
             <span>پایگاه دانش، سئو و استانداردهای مهندسی</span>
+            {isGoogleSheetsSync && (
+              <span className="inline-flex items-center gap-1 text-[10px] text-emerald-800 bg-emerald-100/90 border border-emerald-300 px-2 py-0.5 rounded-full font-medium mr-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                همگام با گوگل شیت
+              </span>
+            )}
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-stone-900 tracking-tight">
             مقالات تخصصی طراحی سوله و اسکلت فلزی

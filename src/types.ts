@@ -127,3 +127,20 @@ export interface StructureTypeItem {
     value: string;
   }[];
 }
+
+export interface GoogleSheetsConfig {
+  enabled: boolean;
+  sheetIdOrUrl: string;
+  gallerySheetName: string;
+  articlesSheetName: string;
+  lastSyncTime?: string;
+  autoSync: boolean;
+}
+
+export interface GoogleSheetsSyncResult {
+  success: boolean;
+  message: string;
+  galleryCount?: number;
+  articlesCount?: number;
+  error?: string;
+}

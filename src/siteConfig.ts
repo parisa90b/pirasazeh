@@ -1,4 +1,4 @@
-import { CompanyConfig, ProjectItem, CraneProjectItem, BridgeProjectItem, GalleryImageItem, BlogPost, ProcessStep, StructureComparison, StructureTypeItem } from './types';
+import { CompanyConfig, ProjectItem, CraneProjectItem, BridgeProjectItem, GalleryImageItem, BlogPost, ProcessStep, StructureComparison, StructureTypeItem, GoogleSheetsConfig } from './types';
 
 /**
  * =======================================================================
@@ -391,7 +391,38 @@ export const BRIDGE_PROJECTS_DATA: BridgeProjectItem[] = [
   }
 ];
 
-export const DEFAULT_GALLERY_IMAGES: GalleryImageItem[] = [];
+export const DEFAULT_GALLERY_IMAGES: GalleryImageItem[] = [
+  {
+    id: 'gallery-pirasazeh-1',
+    imageUrl: '/images/projects/1.jfif',
+    originalFileName: '1.jfif',
+    title: 'نصب اسکلت فلزی سوله صنعتی دهانه عریض شرکت پیراسازه',
+    altText: 'اسکلت فلزی سوله صنعتی دهانه عریض با رفترها و پرلین‌های سقفی در خوزستان - شرکت پیراسازه',
+    category: 'اسکلت فلزی',
+    location: 'اهواز، خوزستان',
+    dimensions: 'سوله دهانه عریض صنعتی'
+  },
+  {
+    id: 'gallery-pirasazeh-2',
+    imageUrl: '/images/projects/2.jfif',
+    originalFileName: '2.jfif',
+    title: 'پوشش سقف و رنگ‌آمیزی استراکچر سوله صنعتی پیراسازه',
+    altText: 'سوله صنعتی رنگ آبی با پوشش عایق سقف و مقاطع فولادی مستحکم در استان خوزستان - پیراسازه',
+    category: 'پوشش سقف',
+    location: 'اهواز، خوزستان',
+    dimensions: 'دهانه ۲۰ متر - شیب استاندارد'
+  },
+  {
+    id: 'gallery-pirasazeh-5',
+    imageUrl: '/images/projects/5.jfif',
+    originalFileName: '5.jfif',
+    title: 'نمای بیرونی سوله صنعتی تیرورقی چند دهانه احداث شده',
+    altText: 'سازه سوله صنعتی تیرورقی رنگ‌آمیزی شده مقاوم در برابر شرایط اقلیمی خوزستان - کارگاه شیبان اهواز',
+    category: 'سوله صنعتی',
+    location: 'استان خوزستان',
+    dimensions: 'طول و دهانه استاندارد صنعتی'
+  }
+];
 
 /* -----------------------------------------------------------------------
  * ۳. مقالات بلاگ تخصصی سوله و سازه‌های فلزی
@@ -695,3 +726,40 @@ export const FAQS_DATA = [
     a: 'شما می‌توانید با هماهنگی تلفنی با شماره ۰۹۱۶۹۸۸۱۳۲۱ در تمام روزهای کاری از کارگاه ساخت و مونتاژ سوله پیراسازه در شیبان اهواز بازدید فرمایید.'
   }
 ];
+
+/* -----------------------------------------------------------------------
+ * ۷. راهنما و ساختار ستون‌های گوگل شیت برای مدیریت بدون نیاز به هاست
+ * ----------------------------------------------------------------------- */
+export const GOOGLE_SHEETS_TEMPLATE_GUIDE = {
+  gallerySheetName: 'Gallery',
+  galleryColumns: [
+    { key: 'imageUrl', fa: 'عکس', desc: 'لینک تصویر (گوگل درایو، هاست یا هر آدرس وب)' },
+    { key: 'title', fa: 'عنوان', desc: 'نام پروژه یا تیتر تصویر' },
+    { key: 'category', fa: 'دسته‌بندی', desc: 'اسکلت فلزی | سوله صنعتی | پوشش سقف | کارگاه شیبان | نصب و مونتاژ' },
+    { key: 'location', fa: 'شهر', desc: 'محل پروژه (مثلاً اهواز، خوزستان)' },
+    { key: 'dimensions', fa: 'ابعاد', desc: 'مشخصات یا دهانه (مثلاً دهانه ۲۰ متر)' },
+    { key: 'altText', fa: 'متن_سئو', desc: 'توضیح متنی تصویر جهت سئو در گوگل' }
+  ],
+  articlesSheetName: 'Articles',
+  articlesColumns: [
+    { key: 'title', fa: 'عنوان', desc: 'تیتر کامل مقاله تخصصی' },
+    { key: 'slug', fa: 'شناسه_یکتا', desc: 'شناسه انگلیسی یا فارسی برای لینک اختصاصی' },
+    { key: 'category', fa: 'دسته‌بندی', desc: 'مبحث دهم | کاهش هزینه ساخت | جرثقیل سقفی | استانداردهای سازه' },
+    { key: 'summary', fa: 'چکیده', desc: 'خلاصه ۲ الی ۳ خطی جهت نمایش در کارت‌های وبلاگ' },
+    { key: 'readTime', fa: 'زمان_مطالعه', desc: 'مثلاً «۶ دقیقه»' },
+    { key: 'date', fa: 'تاریخ', desc: 'مثلاً «شهریور ۱۴۰۴»' },
+    { key: 'author', fa: 'نویسنده', desc: 'مثلاً «مهندس محاسب ارشد سازه»' },
+    { key: 'imageUrl', fa: 'عکس_شاخص', desc: 'تصویر شاخص مقاله (گوگل درایو یا لینک وب)' },
+    { key: 'tags', fa: 'برچسب‌ها', desc: 'کلمات کلیدی جدا شده با کاما، مثلاً «سوله, هزینه ساخت, اهواز»' },
+    { key: 'content', fa: 'متن_مقاله', desc: 'متن کامل مقاله (پاراگراف‌ها با اینتر جدا شوند)' }
+  ]
+};
+
+export const DEFAULT_GOOGLE_SHEETS_CONFIG: GoogleSheetsConfig = {
+  enabled: true,
+  sheetIdOrUrl: '',
+  gallerySheetName: 'گالری',
+  articlesSheetName: 'مقالات',
+  autoSync: true,
+};
+

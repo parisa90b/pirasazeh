@@ -9,16 +9,29 @@ import {
   Phone,
   Share2,
   MapPin,
-  Sparkles
+  Sparkles,
+  FileSpreadsheet,
+  RefreshCw,
+  ExternalLink,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Table
 } from 'lucide-react';
-import { CompanyConfig } from '../types';
-import { COMPANY_INFO } from '../siteConfig';
+import { CompanyConfig, GoogleSheetsConfig, GoogleSheetsSyncResult } from '../types';
+import { COMPANY_INFO, GOOGLE_SHEETS_TEMPLATE_GUIDE } from '../siteConfig';
+import { extractSpreadsheetId } from '../services/googleSheetsService';
 
 interface ContentEditorModalProps {
   isOpen: boolean;
   onClose: () => void;
   config: CompanyConfig;
   onSave: (newConfig: CompanyConfig) => void;
+  sheetsConfig: GoogleSheetsConfig;
+  onSaveSheetsConfig: (newSheetsConfig: GoogleSheetsConfig) => void;
+  onSyncSheetsNow: () => Promise<GoogleSheetsSyncResult>;
+  syncStatus?: GoogleSheetsSyncResult | null;
+  isSyncing?: boolean;
 }
 
 export const ContentEditorModal: React.FC<ContentEditorModalProps> = ({
@@ -26,11 +39,19 @@ export const ContentEditorModal: React.FC<ContentEditorModalProps> = ({
   onClose,
   config,
   onSave,
+  sheetsConfig,
+  onSaveSheetsConfig,
+  onSyncSheetsNow,
+  syncStatus,
+  isSyncing = false,
 }) => {
   const [formData, setFormData] = useState<CompanyConfig>(config);
-  const [activeTab, setActiveTab] = useState<'contact' | 'social' | 'addresses'>('contact');
+  const [sheetsData, setSheetsData] = useState<GoogleSheetsConfig>(sheetsConfig);
+  const [activeTab, setActiveTab] = useState<'contact' | 'social' | 'addresses' | 'sheets'>('sheets');
   const [copied, setCopied] = useState(false);
+  const [copiedGuide, setCopiedGuide] = useState(false);
   const [savedNotice, setSavedNotice] = useState(false);
+  const [localSyncResult, setLocalSyncResult] = useState<GoogleSheetsSyncResult | null>(syncStatus || null);
 
   if (!isOpen) return null;
 
@@ -41,10 +62,41 @@ export const ContentEditorModal: React.FC<ContentEditorModalProps> = ({
     }));
   };
 
+  const handleSheetsChange = (field: keyof GoogleSheetsConfig, value: unknown) => {
+    setSheetsData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   const handleSave = () => {
     onSave(formData);
+    onSaveSheetsConfig(sheetsData);
     setSavedNotice(true);
     setTimeout(() => setSavedNotice(false), 3000);
+  };
+
+  const handleTestAndSync = async () => {
+    onSaveSheetsConfig(sheetsData);
+    const res = await onSyncSheetsNow();
+    setLocalSyncResult(res);
+  };
+
+  const handleCopyGuide = () => {
+    const guideText = `${GOOGLE_SHEETS_TEMPLATE_GUIDE}
+
+=== ساختار ستون‌های برگه گالری (Sheet: Gallery) ===
+imageUrl\ttitle\tcategory\tlocation\tdimensions\taltText
+https://.../photo1.jpg\tسوله صنعتی تیرورقی\tسوله صنعتی\tاهواز، خوزستان\tدهانه ۲۴ متر\tساخت سوله صنعتی در اهواز
+
+=== ساختار ستون‌های برگه مقالات (Sheet: Articles) ===
+title\tslug\tcategory\tsummary\treadTime\tdate\tauthor\timageUrl\ttags\tcontent
+راهنمای محاسبه قیمت سوله\tshed-price-guide\tمدیریت هزینه\tبررسی کامل عوامل موثر بر قیمت سوله در خوزستان\t۶ دقیقه\t۱۴۰۴/۰۶/۱۵\tمهندسی پیراسازه\thttps://.../cover.jpg\tسوله, قیمت, اهواز\tمتن کامل مقاله اینجا قرار می‌گیرد...`;
+
+    navigator.clipboard.writeText(guideText).then(() => {
+      setCopiedGuide(true);
+      setTimeout(() => setCopiedGuide(false), 3000);
+    });
   };
 
   const handleReset = () => {
@@ -160,6 +212,20 @@ export const ContentEditorModal: React.FC<ContentEditorModalProps> = ({
           >
             <MapPin className="w-4 h-4" />
             <span>آدرس دفتر و کارخانه</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('sheets')}
+            className={`flex items-center gap-2 py-3 px-4 text-xs font-bold border-b-2 transition-colors ${
+              activeTab === 'sheets'
+                ? 'border-emerald-700 text-emerald-900 bg-emerald-50/50'
+                : 'border-transparent text-stone-500 hover:text-stone-800'
+            }`}
+          >
+            <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+            <span className="flex items-center gap-1.5">
+              <span>اتصال به گوگل شیت</span>
+              <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-md font-semibold">CMS</span>
+            </span>
           </button>
         </div>
 
@@ -394,6 +460,203 @@ export const ContentEditorModal: React.FC<ContentEditorModalProps> = ({
                   className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5C9BA] bg-white text-stone-900 text-xs focus:ring-2 focus:ring-amber-700 focus:outline-none leading-relaxed"
                 />
               </div>
+            </div>
+          )}
+
+          {activeTab === 'sheets' && (
+            <div className="space-y-5">
+              {/* Introduction Card */}
+              <div className="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200/80 text-emerald-950 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-emerald-900">
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-700" />
+                  <span>مدیریت عکس‌های گالری و مقالات سایت از طریق Google Sheets</span>
+                </div>
+                <p className="text-xs text-emerald-900/80 leading-relaxed">
+                  با این ویژگی بدون نیاز به مراجعه به هاست، cPanel یا دست زدن به کدها، هر زمان ردیف جدیدی در گوگل شیت خود ثبت کنید، تصاویر جدید در گالری و مقالات جدید در وبلاگ سایت به‌صورت زنده و خودکار نمایش داده می‌شوند!
+                </p>
+              </div>
+
+              {/* Sheet URL or ID Field */}
+              <div className="p-4 rounded-2xl bg-white border border-[#D5C9BA] space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-stone-800">
+                    لینک یا شناسه (Spreadsheet ID) گوگل شیت شما:
+                  </label>
+                  {sheetsData.sheetIdOrUrl && (
+                    <a
+                      href={sheetsData.sheetIdOrUrl.startsWith('http') ? sheetsData.sheetIdOrUrl : `https://docs.google.com/spreadsheets/d/${extractSpreadsheetId(sheetsData.sheetIdOrUrl)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-900"
+                    >
+                      <span>باز کردن شیت در گوگل</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <input
+                    type="text"
+                    dir="ltr"
+                    placeholder="https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5.../edit یا شناسه شیت"
+                    value={sheetsData.sheetIdOrUrl}
+                    onChange={(e) => handleSheetsChange('sheetIdOrUrl', e.target.value)}
+                    className="w-full pl-3 pr-10 py-2.5 rounded-xl border border-[#D5C9BA] bg-[#FAF8F5] text-stone-900 text-xs font-mono focus:ring-2 focus:ring-emerald-700 focus:outline-none"
+                  />
+                  <div className="absolute right-3 top-3 text-stone-400">
+                    <FileSpreadsheet className="w-4 h-4" />
+                  </div>
+                </div>
+                <p className="text-[11px] text-stone-500">
+                  می‌توانید کل لینک اشتراک‌گذاری گوگل شیت را از نوار آدرس مرورگر کپی کرده و در این کادر قرار دهید.
+                </p>
+              </div>
+
+              {/* Tab Names Configuration */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-white border border-[#D5C9BA]">
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1">
+                    نام برگه (Tab) تصاویر گالری:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Gallery یا گالری"
+                    value={sheetsData.gallerySheetName}
+                    onChange={(e) => handleSheetsChange('gallerySheetName', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#D5C9BA] bg-[#FAF8F5] text-stone-900 text-xs focus:ring-2 focus:ring-emerald-700 focus:outline-none"
+                  />
+                  <span className="text-[10px] text-stone-500 mt-1 block">پیش‌فرض: Gallery یا گالری</span>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-stone-700 mb-1">
+                    نام برگه (Tab) مقالات وبلاگ:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Articles یا مقالات"
+                    value={sheetsData.articlesSheetName}
+                    onChange={(e) => handleSheetsChange('articlesSheetName', e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#D5C9BA] bg-[#FAF8F5] text-stone-900 text-xs focus:ring-2 focus:ring-emerald-700 focus:outline-none"
+                  />
+                  <span className="text-[10px] text-stone-500 mt-1 block">پیش‌فرض: Articles یا مقالات</span>
+                </div>
+
+                <div className="sm:col-span-2 pt-2 border-t border-[#E8DFD5] flex items-center justify-between">
+                  <label className="flex items-center gap-2 text-xs font-medium text-stone-800 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={sheetsData.autoSync}
+                      onChange={(e) => handleSheetsChange('autoSync', e.target.checked)}
+                      className="w-4 h-4 rounded text-emerald-700 focus:ring-emerald-600 border-stone-300 cursor-pointer"
+                    />
+                    <span>همگام‌سازی خودکار در هر بار بارگذاری سایت (Auto-sync)</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Action Buttons: Test & Sync Now */}
+              <div className="flex flex-col sm:flex-row items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleTestAndSync}
+                  disabled={isSyncing}
+                  className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 transition-all cursor-pointer shadow-sm"
+                >
+                  {isSyncing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>در حال دریافت زنده از گوگل شیت...</span>
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-4 h-4" />
+                      <span>تست اتصال و همگام‌سازی فوری (Sync Now)</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Sync Result Alert */}
+              {localSyncResult && (
+                <div className={`p-3.5 rounded-2xl text-xs flex items-start gap-2.5 border ${
+                  localSyncResult.success 
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-900' 
+                    : 'bg-amber-50 border-amber-300 text-amber-950'
+                }`}>
+                  {localSyncResult.success ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  )}
+                  <div className="flex-1 leading-relaxed">
+                    <p className="font-bold mb-0.5">{localSyncResult.message}</p>
+                    {localSyncResult.galleryCount !== undefined && (
+                      <p className="text-[11px] opacity-85">
+                        تعداد تصاویر دریافتی: {localSyncResult.galleryCount} | تعداد مقالات دریافتی: {localSyncResult.articlesCount}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Step-by-Step Google Sheet Setup Guide */}
+              <div className="p-4 rounded-2xl bg-[#F4EDE5] border border-[#D5C9BA] space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-stone-900 flex items-center gap-1.5">
+                    <Table className="w-4 h-4 text-amber-800" />
+                    <span>راهنمای ۳ گام راه‌اندازی شیت اختصاصی شما:</span>
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={handleCopyGuide}
+                    className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-white hover:bg-stone-50 border border-stone-300 text-stone-700 cursor-pointer shadow-xs transition-colors"
+                  >
+                    {copiedGuide ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-600" />
+                        <span className="text-emerald-700">کپی شد!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" />
+                        <span>کپی ستون‌های نمونه</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <ol className="text-xs text-stone-700 space-y-2 list-decimal list-inside leading-relaxed pr-1">
+                  <li>
+                    یک فایل اکسل جدید در <a href="https://sheets.new" target="_blank" rel="noopener noreferrer" className="text-emerald-800 font-bold underline inline-flex items-center gap-0.5">Google Sheets (کلیک کنید)</a> ایجاد فرمایید.
+                  </li>
+                  <li>
+                    دو برگه (Tab) در پایین ایجاد کنید: یکی با نام <strong>Gallery</strong> و دیگری <strong>Articles</strong> (همچنین می‌توانید به فارسی «گالری» و «مقالات» بگذارید).
+                  </li>
+                  <li>
+                    از دکمه سبز <strong>Share</strong> در گوشه بالا-راست، دسترسی را روی <strong>Anyone with the link can view</strong> قرار دهید و لینک آن را در کادر بالا پیست کنید!
+                  </li>
+                </ol>
+
+                {/* Column details */}
+                <div className="pt-2 border-t border-[#E0D5C7] space-y-2 text-[11px]">
+                  <div className="font-bold text-stone-800">اسامی سرستون‌های برگه گالری (Sheet 1):</div>
+                  <div className="bg-white p-2 rounded-xl border border-stone-200 font-mono text-[10px] text-stone-800 overflow-x-auto select-all">
+                    imageUrl , title , category , location , dimensions , altText
+                  </div>
+
+                  <div className="font-bold text-stone-800 pt-1">اسامی سرستون‌های برگه مقالات (Sheet 2):</div>
+                  <div className="bg-white p-2 rounded-xl border border-stone-200 font-mono text-[10px] text-stone-800 overflow-x-auto select-all">
+                    title , slug , category , summary , readTime , date , author , imageUrl , tags , content
+                  </div>
+
+                  <div className="text-[10px] text-stone-500 pt-1">
+                    💡 <strong>نکته تصویر:</strong> ستون imageUrl می‌تواند لینک مستقیم، لینک تصاویر در هاست، یا حتی لینک فایل عکس در Google Drive باشد (سایت خودکار لینک گوگل درایو را به تصویر وب تبدیل می‌کند).
+                  </div>
+                </div>
+              </div>
+
             </div>
           )}
         </div>

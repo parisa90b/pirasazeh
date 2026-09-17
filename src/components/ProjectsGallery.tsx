@@ -1,25 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Images, 
   X, 
   ChevronRight, 
   ChevronLeft, 
   ZoomIn, 
-  Sparkles,
-  MapPin,
-  Building2,
-  Award,
-  Search,
-  CheckCircle2,
-  Scale,
-  ShieldCheck,
-  Zap,
-  Route,
-  UploadCloud,
-  Plus,
-  Trash2,
-  Check,
-  Loader2
+  Sparkles, 
+  MapPin, 
+  Building2, 
+  Award, 
+  Search, 
+  CheckCircle2, 
+  Scale, 
+  ShieldCheck, 
+  Zap, 
+  Route 
 } from 'lucide-react';
 import { GalleryImageItem } from '../types';
 import { PROJECTS_DATA, CRANE_PROJECTS_DATA, BRIDGE_PROJECTS_DATA } from '../siteConfig';
@@ -27,11 +22,12 @@ import { PROJECTS_DATA, CRANE_PROJECTS_DATA, BRIDGE_PROJECTS_DATA } from '../sit
 interface ProjectsGalleryProps {
   images: GalleryImageItem[];
   onUpdateImages?: (newImages: GalleryImageItem[]) => void;
+  isGoogleSheetsSync?: boolean;
 }
 
 export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
   images,
-  onUpdateImages,
+  isGoogleSheetsSync = false,
 }) => {
   // Active view: 'gallery' (pure visual photos prioritized by default) | 'portfolio' (17 company sheds) | 'bridges' (4 vehicular bridges) | 'cranes' (6 overhead cranes)
   const [activeTab, setActiveTab] = useState<'gallery' | 'portfolio' | 'bridges' | 'cranes'>('gallery');
@@ -44,114 +40,14 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
   const [bridgeSearchQuery, setBridgeSearchQuery] = useState<string>('');
   const [craneSearchQuery, setCraneSearchQuery] = useState<string>('');
 
-  // Upload & Image Management States
-  const [isUploadPanelOpen, setIsUploadPanelOpen] = useState<boolean>(false);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
-  const [isDraggingOver, setIsDraggingOver] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFilesSelected = async (fileList: FileList | File[] | null) => {
-    if (!fileList || fileList.length === 0) return;
-    setIsUploading(true);
-    setUploadMessage(null);
-
-    const files = Array.from(fileList);
-    const newItems: GalleryImageItem[] = [];
-
-    for (const file of files) {
-      if (!file.type.startsWith('image/') && !file.name.match(/\.(jpg|jpeg|jfif|png|webp|svg)$/i)) {
-        continue;
-      }
-
-      try {
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-
-        let savedUrl = dataUrl;
-        // Attempt persistent upload to Vite server middleware
-        try {
-          const res = await fetch('/api/upload-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              fileName: file.name,
-              base64Data: dataUrl
-            })
-          });
-          if (res.ok) {
-            const data = await res.json();
-            if (data.imageUrl) {
-              savedUrl = data.imageUrl;
-            }
-          }
-        } catch {
-          // Keep base64 dataUrl as reliable fallback in localStorage
-        }
-
-        const cleanName = file.name
-          .replace(/\.[^/.]+$/, '')
-          .replace(/[_-]/g, ' ');
-
-        const isCrane = /crane|جرثقیل/i.test(cleanName);
-        const isBridge = /bridge|پل/i.test(cleanName);
-        const category = isCrane ? 'کارگاه شیبان' : isBridge ? 'نصب و مونتاژ' : 'سوله صنعتی';
-
-        newItems.push({
-          id: `uploaded-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-          imageUrl: savedUrl,
-          originalFileName: file.name,
-          title: `پروژه سوله پیراسازه اهواز - ${cleanName || 'سازه فولادی'}`,
-          altText: `ساخت و نصب سوله صنعتی پیراسازه در خوزستان - ${file.name}`,
-          category: category,
-          location: 'اهواز، خوزستان',
-          dimensions: 'طراحی اختصاصی پیراسازه'
-        });
-      } catch (err) {
-        console.error('Error reading file:', err);
-      }
-    }
-
-    if (newItems.length > 0 && onUpdateImages) {
-      const updated = [...newItems, ...images];
-      onUpdateImages(updated);
-      setUploadMessage(`${newItems.length} تصویر با موفقیت به گالری افزوده شد.`);
-      setTimeout(() => setUploadMessage(null), 5000);
-    }
-    setIsUploading(false);
-  };
-
-  const handleDeleteImage = (idToDelete: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!onUpdateImages) return;
-    if (window.confirm('آیا این تصویر از گالری حذف شود؟')) {
-      const updated = images.filter(img => img.id !== idToDelete);
-      onUpdateImages(updated);
-      setUploadMessage('تصویر از گالری حذف شد.');
-      setTimeout(() => setUploadMessage(null), 3000);
-    }
-  };
-
-  const handleClearAllImages = () => {
-    if (!onUpdateImages) return;
-    if (window.confirm('آیا مایلید تمام عکس‌های گالری پاکسازی شوند؟')) {
-      onUpdateImages([]);
-      setUploadMessage('عکس‌های گالری پاکسازی شدند.');
-      setTimeout(() => setUploadMessage(null), 3000);
-    }
-  };
-
   // Gallery Categories
   const galleryCategories = [
     { id: 'all', label: 'همه تصاویر' },
+    { id: 'اسکلت فلزی', label: 'اسکلت فلزی' },
     { id: 'سوله صنعتی', label: 'سوله صنعتی' },
+    { id: 'پوشش سقف', label: 'پوشش سقف' },
     { id: 'کارگاه شیبان', label: 'کارگاه شیبان' },
     { id: 'نصب و مونتاژ', label: 'نصب و مونتاژ' },
-    { id: 'پوشش سقف', label: 'پوشش سقف' },
   ];
 
   const filteredGalleryImages = activeCategory === 'all' 
@@ -358,26 +254,10 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
         {/* VIEW 1: Pure Visual Gallery (No text cards under thumbnails) */}
         {/* ------------------------------------------------------------- */}
         {activeTab === 'gallery' && (
-          <div
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsDraggingOver(true);
-            }}
-            onDragLeave={(e) => {
-              if (e.currentTarget.contains(e.relatedTarget as Node)) return;
-              setIsDraggingOver(false);
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              setIsDraggingOver(false);
-              handleFilesSelected(e.dataTransfer.files);
-            }}
-            className="relative"
-          >
-            {/* Upload & Management Top Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              {/* Category Filter Tabs */}
-              {images.length > 0 && (
+          <div className="relative">
+            {/* Gallery Category Filter Tabs */}
+            {images.length > 0 && (
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
                   {galleryCategories.map((cat) => (
                     <button
@@ -394,99 +274,13 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
                     </button>
                   ))}
                 </div>
-              )}
 
-              {/* Action Buttons: Add Image & Reset */}
-              {onUpdateImages && (
-                <div className="flex items-center gap-2 mr-auto">
-                  <button
-                    onClick={() => setIsUploadPanelOpen(!isUploadPanelOpen)}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm ${
-                      isUploadPanelOpen 
-                        ? 'bg-amber-800 text-white shadow-amber-900/20' 
-                        : 'bg-amber-100/90 text-amber-900 hover:bg-amber-200/90 border border-amber-300/60'
-                    }`}
-                  >
-                    <UploadCloud className="w-3.5 h-3.5" />
-                    <span>{isUploadPanelOpen ? 'بستن پنل بارگذاری' : 'افزودن عکس به گالری'}</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                  </button>
-
-                  {images.length > 0 && (
-                    <button
-                      onClick={handleClearAllImages}
-                      title="پاکسازی تمام عکس‌های گالری"
-                      className="p-1.5 rounded-xl text-stone-500 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Upload Message Toast */}
-            {uploadMessage && (
-              <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-emerald-600" />
-                  <span>{uploadMessage}</span>
-                </div>
-                <button 
-                  onClick={() => setUploadMessage(null)}
-                  className="text-emerald-600 hover:text-emerald-900 text-xs cursor-pointer"
-                >
-                  بستن
-                </button>
-              </div>
-            )}
-
-            {/* Interactive Upload & Drag-Drop Panel */}
-            {isUploadPanelOpen && (
-              <div className="mb-6 p-4 sm:p-5 rounded-2xl bg-white border-2 border-dashed border-amber-300/80 shadow-sm transition-all">
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  multiple
-                  accept="image/*,.jfif,.svg"
-                  onChange={(e) => handleFilesSelected(e.target.files)}
-                  className="hidden"
-                />
-
-                <div 
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex flex-col items-center justify-center py-6 px-4 text-center cursor-pointer group hover:bg-amber-50/50 rounded-xl transition-colors"
-                >
-                  <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    {isUploading ? (
-                      <Loader2 className="w-6 h-6 animate-spin text-amber-700" />
-                    ) : (
-                      <UploadCloud className="w-6 h-6 text-amber-700" />
-                    )}
+                {isGoogleSheetsSync && (
+                  <div className="mr-auto inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-xl">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                    <span>متصل به گوگل شیت</span>
                   </div>
-
-                  <h4 className="text-sm font-bold text-stone-900 mb-1">
-                    {isUploading ? 'در حال بارگذاری و ذخیره تصاویر...' : 'عکس‌های پروژه را اینجا بکشید یا برای انتخاب کلیک کنید'}
-                  </h4>
-                  <p className="text-xs text-stone-500 max-w-md">
-                    می‌توانید تمام ۱۶ عکس پروژه (انواع فرمت‌های JPG, JFIF, PNG) را به‌صورت همزمان انتخاب یا رها کنید تا در بالای گالری نمایش داده شوند.
-                  </p>
-
-                  <div className="mt-4 flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-stone-900 text-white text-xs font-medium">
-                      <Plus className="w-3.5 h-3.5" />
-                      انتخاب فایل‌ها از سیستم
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Global Drag Overlay */}
-            {isDraggingOver && (
-              <div className="absolute inset-0 z-30 bg-amber-900/40 backdrop-blur-xs rounded-2xl flex flex-col items-center justify-center p-6 border-4 border-dashed border-amber-400">
-                <UploadCloud className="w-16 h-16 text-white animate-bounce mb-3" />
-                <p className="text-white text-base font-bold">عکس‌ها را همین‌جا رها کنید تا به گالری اضافه شوند</p>
+                )}
               </div>
             )}
 
@@ -495,7 +289,6 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
                 {filteredGalleryImages.map((img, idx) => {
                   const realIndex = images.findIndex((item) => item.id === img.id);
                   const fallbackUrl = img.originalFileName ? `/images/projects/${img.originalFileName}` : img.imageUrl;
-                  const isUserUploaded = img.id.startsWith('uploaded-');
                   
                   return (
                     <div
@@ -535,24 +328,6 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
                       <meta itemProp="caption" content={img.altText || img.title || 'سوله پیراسازه'} />
                       <meta itemProp="contentLocation" content={img.location || 'اهواز، خوزستان'} />
 
-                      {/* Delete button on hover for uploaded images */}
-                      {onUpdateImages && (
-                        <button
-                          onClick={(e) => handleDeleteImage(img.id, e)}
-                          title="حذف تصویر از گالری"
-                          className="absolute top-2 left-2 p-1.5 rounded-lg bg-black/60 hover:bg-red-600 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer shadow-md"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-
-                      {/* Badge for new uploaded image */}
-                      {isUserUploaded && (
-                        <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-amber-600/90 backdrop-blur-sm text-white text-[10px] font-bold shadow">
-                          تصویر جدید
-                        </div>
-                      )}
-
                       {/* Subtle hover overlay with zoom icon */}
                       <div className="absolute inset-0 bg-stone-900/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <div className="w-10 h-10 rounded-full bg-white/95 backdrop-blur-md text-amber-900 flex items-center justify-center shadow-lg transform scale-75 group-hover:scale-100 transition-transform">
@@ -570,31 +345,8 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
                   );
                 })}
               </div>
-            ) : images.length === 0 ? (
-              <div 
-                onClick={() => fileInputRef.current?.click()}
-                className="rounded-3xl border-2 border-dashed border-amber-300/80 bg-amber-50/20 p-8 sm:p-14 text-center space-y-4 cursor-pointer hover:border-amber-500 hover:bg-amber-50/50 transition-all group shadow-xs"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mx-auto shadow-xs group-hover:scale-105 transition-transform">
-                  <UploadCloud className="w-8 h-8 text-amber-700" />
-                </div>
-                <div className="max-w-md mx-auto space-y-1.5">
-                  <h3 className="text-base sm:text-lg font-black text-stone-900">
-                    عکس‌های پیش‌فرض حذف شدند — گالری آماده عکس‌های واقعی است
-                  </h3>
-                  <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                    عکس‌های واقعی پروژه‌ها، کارگاه شیبان و مراحل ساخت را اینجا بکشید یا برای انتخاب فایل‌ها کلیک کنید.
-                  </p>
-                </div>
-                <div className="pt-2 flex items-center justify-center gap-3">
-                  <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-800 hover:bg-amber-900 text-white font-bold text-xs sm:text-sm shadow-md transition-all">
-                    <Plus className="w-4 h-4" />
-                    <span>انتخاب و بارگذاری عکس‌های واقعی پروژه</span>
-                  </span>
-                </div>
-              </div>
             ) : (
-              <div className="rounded-3xl border-2 border-dashed border-[#D8CEBF] bg-[#F5EFEB]/60 p-10 sm:p-14 text-center space-y-4">
+              <div className="rounded-3xl border border-[#D8CEBF] bg-[#F5EFEB]/60 p-10 sm:p-14 text-center space-y-4">
                 <div className="w-16 h-16 rounded-2xl bg-[#EAE1D7] text-amber-800 flex items-center justify-center mx-auto shadow-inner">
                   <Images className="w-8 h-8" />
                 </div>
