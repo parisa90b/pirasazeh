@@ -1,0 +1,6 @@
+# Robots.txt for Pirasazeh Industrial Shed & Steel Structures
+User-agent: *
+Allow: /
+
+# Sitemap Location
+Sitemap: https://solepirasazeh.ir/sitemap.xml
