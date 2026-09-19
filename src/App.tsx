@@ -13,6 +13,7 @@ import { ProjectsGallery } from './components/ProjectsGallery';
 import { CustomQuoteFormSection } from './components/CustomQuoteFormSection';
 import { TimelineProcess } from './components/TimelineProcess';
 import { ComparisonTable } from './components/ComparisonTable';
+import { SteelPriceAndToolsSection } from './components/SteelPriceAndToolsSection';
 import { BlogSection } from './components/BlogSection';
 import { FaqSection } from './components/FaqSection';
 import { ContactSection } from './components/ContactSection';
@@ -118,7 +119,12 @@ export function App() {
         {/* 7. Structure Types & Prefabricated Foundation (معرفی انواع سازه و فونداسیون پیش‌ساخته) */}
         <ComparisonTable />
 
-        {/* 8. Engineering Blog & SEO Articles */}
+        {/* 8. Live Steel Prices & Material Weight Calculator (رصد آنلاین مراجع قیمت آهن و محاسبه‌گر سوله) */}
+        <SteelPriceAndToolsSection 
+          config={config}
+        />
+
+        {/* 9. Engineering Blog & SEO Articles */}
         <BlogSection 
           posts={blogPosts}
         />

@@ -85,6 +85,11 @@ export const Footer: React.FC<FooterProps> = ({ config }) => {
                 </a>
               </li>
               <li>
+                <a href="#steel-prices" className="hover:text-amber-400 transition-colors">
+                  رصد قیمت روز آهن و محاسبه‌گر وزن سوله
+                </a>
+              </li>
+              <li>
                 <a href="#blog" className="hover:text-amber-400 transition-colors">
                   مقالات و استانداردهای طراحی سوله
                 </a>

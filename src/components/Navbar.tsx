@@ -55,6 +55,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <a href="#structures" className="hover:text-amber-800 transition-colors py-1">
               انواع سازه و فونداسیون
             </a>
+            <a href="#steel-prices" className="hover:text-amber-800 transition-colors py-1 text-amber-900 font-extrabold flex items-center gap-1">
+              <span>قیمت روز آهن و محاسبه وزن</span>
+            </a>
             <a href="#blog" className="hover:text-amber-800 transition-colors py-1">
               مقالات و استانداردها
             </a>
@@ -127,6 +130,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="p-2 rounded-lg hover:bg-[#F3ECE4] transition-colors"
             >
               انواع سازه و فونداسیون پیش‌ساخته
+            </a>
+            <a 
+              href="#steel-prices" 
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2 rounded-lg hover:bg-[#F3ECE4] transition-colors text-amber-900 font-bold"
+            >
+              قیمت روز آهن و محاسبه‌گر وزن سوله
             </a>
             <a 
               href="#blog" 
