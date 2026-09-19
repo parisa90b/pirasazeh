@@ -2,5 +2,25 @@
 User-agent: *
 Allow: /
 
-# Sitemap Location
+# Dedicated AI Search & Answer Engine Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Sitemap & LLM summary
 Sitemap: https://solehsazeh.ir/sitemap.xml
+# LLMs Summary: https://solehsazeh.ir/llms.txt
