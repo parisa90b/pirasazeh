@@ -172,45 +172,45 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
       id="projects" 
       itemScope 
       itemType="https://schema.org/ImageGallery"
-      className="py-14 lg:py-20 bg-[#FBF9F5] border-b border-[#E8DFD5] transition-colors duration-200"
+      className="py-14 lg:py-20 bg-white border-b border-slate-200 transition-colors duration-200"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-6">
-          <div className="text-right max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#D8CEBF] bg-[#F3ECE4] px-4 py-1 text-xs font-bold text-amber-900 mb-2.5 shadow-sm">
-              <Award className="w-3.5 h-3.5 text-amber-700" />
-              <span>رزومه و نمونه‌کارهای شرکت سوله پیراسازه</span>
+          <div className="text-right max-w-2xl space-y-1">
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1 text-xs font-bold text-blue-900 mb-1 shadow-xs">
+              <Award className="w-3.5 h-3.5 text-blue-700" />
+              <span>رزومه و نمونه‌کارهای شرکت سوله پیراسازه نوین</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               نمونه کارهای شرکت – سوله‌ها، پل‌های ماشین‌رو و جرثقیل‌های سقفی
             </h2>
-            <p className="text-xs sm:text-sm text-stone-600 mt-1.5 leading-relaxed">
-              سوابق پروژه‌های شاخص سوله تیرورقی، پل‌های فلزی ماشین‌رو، سازه‌های سنگین، جرثقیل‌های سقفی (۳ تا ۴۰ تن) و گالری مستند کارگاه شیبان اهواز
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              سوابق پروژه‌های شاخص سوله تیرورقی، پل‌های فلزی ماشین‌رو، سازه‌های سنگین، جرثقیل‌های سقفی (۳ تا ۴۰ تن) و گالری مستند کارگاه شیبان اهواز تحت نظارت دکتر پیراسته
             </p>
           </div>
 
           {/* Quality & Factory Badge */}
           <div className="flex items-center gap-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#F3ECE4] border border-[#D8CEBF] text-stone-800 text-xs font-bold shadow-sm">
-              <ShieldCheck className="w-4 h-4 text-emerald-700" />
-              <span>گارانتی ۳ ساله و تاییدیه نظام مهندسی</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-950 text-xs font-bold shadow-xs">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>گارانتی ۳ ساله و تاییدیه نظام مهندسی سراسر کشور</span>
             </div>
           </div>
         </div>
 
-        {/* Primary View Switcher: 4 Tabs (Image Gallery prioritized first, followed by Sheds, Bridges, Cranes) */}
-        <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-[#EFE7DE] border border-[#DDD3C5] max-w-4xl mb-6 shadow-inner overflow-x-auto scrollbar-none">
+        {/* Primary View Switcher: 4 Tabs */}
+        <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 border border-slate-200 max-w-4xl mb-6 shadow-inner overflow-x-auto scrollbar-none">
           <button
             onClick={() => setActiveTab('gallery')}
             className={`flex-1 min-w-[155px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'gallery'
-                ? 'bg-stone-900 text-white shadow-md'
-                : 'text-stone-700 hover:text-stone-900 hover:bg-white/40'
+                ? 'bg-blue-700 text-white shadow-md shadow-blue-700/25'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <Images className="w-4 h-4 text-amber-400" />
+            <Images className="w-4 h-4 text-blue-200" />
             <span>گالری تصاویر پروژه‌ها ({images.length})</span>
           </button>
 
@@ -218,8 +218,8 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
             onClick={() => setActiveTab('portfolio')}
             className={`flex-1 min-w-[155px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'portfolio'
-                ? 'bg-amber-800 text-white shadow-md'
-                : 'text-stone-700 hover:text-stone-900 hover:bg-white/40'
+                ? 'bg-blue-700 text-white shadow-md shadow-blue-700/25'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
             <Building2 className="w-4 h-4" />
@@ -230,8 +230,8 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
             onClick={() => setActiveTab('bridges')}
             className={`flex-1 min-w-[155px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'bridges'
-                ? 'bg-amber-800 text-white shadow-md'
-                : 'text-stone-700 hover:text-stone-900 hover:bg-white/40'
+                ? 'bg-blue-700 text-white shadow-md shadow-blue-700/25'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
             <Route className="w-4 h-4" />
@@ -242,8 +242,8 @@ export const ProjectsGallery: React.FC<ProjectsGalleryProps> = ({
             onClick={() => setActiveTab('cranes')}
             className={`flex-1 min-w-[155px] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               activeTab === 'cranes'
-                ? 'bg-amber-800 text-white shadow-md'
-                : 'text-stone-700 hover:text-stone-900 hover:bg-white/40'
+                ? 'bg-blue-700 text-white shadow-md shadow-blue-700/25'
+                : 'text-slate-700 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
             <Scale className="w-4 h-4" />

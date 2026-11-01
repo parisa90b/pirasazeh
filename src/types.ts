@@ -1,6 +1,8 @@
 export interface CompanyConfig {
   companyName: string;
   brandTitle: string;
+  doctorTitle: string;
+  doctorAffiliation: string;
   tagline: string;
   phonePrimary: string;       // شماره موبایل اصلی (پاسخگویی مستقیم مهندس محاسب)
   phoneSecondary: string;     // تلفن ثابت دفتر مرکزی
@@ -15,6 +17,17 @@ export interface CompanyConfig {
   email: string;
   officeAddress: string;
   factoryAddress: string;
+}
+
+export interface IranProvinceItem {
+  id: string;
+  name: string;
+  capital: string;
+  industrialHubs: string;
+  windSpeedKmh: number;
+  snowLoadKg: number;
+  seismicZone: string;
+  deliveryTimeDays: string;
 }
 
 export interface GalleryImageItem {

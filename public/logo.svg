@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="pirasazehBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="60%" stop-color="#1D4ED8" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="barGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1D4ED8" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Top Curved Structural Rafter and Right Column -->
+  <!-- Upper arched beam: from top-left curving down to right shoulder, then tapered column down -->
+  <path d="M 12 12 
+           C 40 18, 72 30, 102 38 
+           L 96 98 
+           C 93 72, 85 48, 68 36 
+           C 52 26, 30 20, 12 20 
+           Z" 
+        fill="url(#pirasazehBlueGrad)" />
+
+  <!-- Horizontal Beam Louvers / Structural Purlins -->
+  <!-- 10 horizontal bars aligned flush at left (x=12) with rounded ends on right matching the inner curve -->
+  <!-- Bar 1 -->
+  <rect x="12" y="24" width="22" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 2 -->
+  <rect x="12" y="31" width="31" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 3 -->
+  <rect x="12" y="38" width="41" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 4 -->
+  <rect x="12" y="45" width="50" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 5 -->
+  <rect x="12" y="52" width="58" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 6 -->
+  <rect x="12" y="59" width="65" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 7 -->
+  <rect x="12" y="66" width="71" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 8 -->
+  <rect x="12" y="73" width="76" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 9 -->
+  <rect x="12" y="80" width="80" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 10 -->
+  <rect x="12" y="87" width="82" height="4.2" rx="1.2" fill="url(#barGrad)" />
+  <!-- Bar 11 -->
+  <rect x="12" y="94" width="83" height="4.2" rx="1.2" fill="url(#barGrad)" />
+</svg>

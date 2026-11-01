@@ -106,6 +106,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                   alt={post.title}
                   loading="lazy"
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/images/projects/1.svg';
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-3 right-3">
@@ -189,6 +192,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                 src={selectedPost.imageUrl}
                 alt={selectedPost.title}
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/images/projects/1.svg';
+                }}
                 className="w-full h-full object-cover"
               />
             </div>

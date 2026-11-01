@@ -9,6 +9,7 @@ import {
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { TrustBadges } from './components/TrustBadges';
+import { IranCoverageSection } from './components/IranCoverageSection';
 import { ProjectsGallery } from './components/ProjectsGallery';
 import { CustomQuoteFormSection } from './components/CustomQuoteFormSection';
 import { TimelineProcess } from './components/TimelineProcess';
@@ -22,11 +23,12 @@ import { FloatingActionDock } from './components/FloatingActionDock';
 
 export function App() {
   const [config] = useState<CompanyConfig>(() => COMPANY_INFO);
+  const [quoteCity, setQuoteCity] = useState<string>('اهواز');
 
-  // Google Sheets CMS Configuration state (siteConfig.ts is the master source of truth)
+  // Google Sheets CMS Configuration state
   const [sheetsConfig] = useState<GoogleSheetsConfig>(() => loadGoogleSheetsConfig());
 
-  // Gallery images state (cached from Google Sheets or fallback to real project photos)
+  // Gallery images state
   const [galleryImages, setGalleryImages] = useState<GalleryImageItem[]>(() => {
     const cached = loadGoogleSheetsCache();
     if (cached.gallery && cached.gallery.length > 0) {
@@ -46,7 +48,7 @@ export function App() {
     return DEFAULT_GALLERY_IMAGES;
   });
 
-  // Blog posts state (cached from Google Sheets or fallback to engineering articles)
+  // Blog posts state
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>(() => {
     const cached = loadGoogleSheetsCache();
     if (cached.articles && cached.articles.length > 0) {
@@ -55,7 +57,7 @@ export function App() {
     return BLOG_POSTS_DATA;
   });
 
-  // Background auto-sync on mount if enabled and has sheet ID or URLs
+  // Background auto-sync on mount
   useEffect(() => {
     const hasSheets = Boolean(
       sheetsConfig.enabled && 
@@ -82,10 +84,15 @@ export function App() {
     }
   };
 
+  const handleSelectCityForQuote = (cityName: string) => {
+    setQuoteCity(cityName);
+    scrollToQuoteForm();
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-stone-900 selection:bg-amber-200 selection:text-amber-900">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       
-      {/* 1. Header & Navigation (Clean, no settings button or cPanel button) */}
+      {/* 1. Header & Navigation with Blue Architectural Logo */}
       <Navbar 
         config={config}
         onOpenQuoteForm={scrollToQuoteForm}
@@ -94,57 +101,65 @@ export function App() {
       {/* Main Content Sections */}
       <main className="flex-1">
         
-        {/* 2. Hero Section (Warm Nude theme, direct WhatsApp / Bale links) */}
+        {/* 2. Hero Section: Modern Navy & Blue Theme, Line 1 Phone Number Priority, Dr. Pirasteh Credentials */}
         <HeroSection 
           config={config}
           onOpenQuoteForm={scrollToQuoteForm}
         />
 
-        {/* 3. Trust & Engineering Certifications (3-Year Warranty, Mabhas 6 & 10) */}
+        {/* 3. Trust & Engineering Badges (Dr. Pirasteh, 3-Year Warranty, NDT, Mabhas 6 & 10) */}
         <TrustBadges />
 
-        {/* 4. Projects Gallery (Pure visual gallery without descriptions - SEO optimized) */}
+        {/* 4. Nationwide Iran Coverage: 31 Provinces & Industrial Cities (سئو برای تمام شهرهای ایران) */}
+        <IranCoverageSection 
+          onSelectCityForQuote={handleSelectCityForQuote}
+        />
+
+        {/* 5. Projects Gallery & Flagship Portfolio (سوله‌ها، پل‌های ماشین‌رو، جرثقیل‌ها) */}
         <ProjectsGallery 
           images={galleryImages}
         />
 
-        {/* 5. Custom Quote Form (Direct transmission of dimensions to structural designer via WhatsApp & Bale) */}
+        {/* 6. Custom Quote Form (Direct transmission of dimensions to structural designer via WhatsApp & Bale) */}
         <CustomQuoteFormSection 
           config={config}
+          initialValues={{
+            projectTitle: quoteCity !== 'اهواز' ? `پروژه سوله در استان ${quoteCity}` : undefined
+          }}
         />
 
-        {/* 6. Timeline Process (Design, Fabrication, Sandblasting & Erection) */}
+        {/* 7. Timeline Process (Design, Fabrication, Sandblasting & Erection) */}
         <TimelineProcess />
 
-        {/* 7. Structure Types & Prefabricated Foundation (معرفی انواع سازه و فونداسیون پیش‌ساخته) */}
+        {/* 8. Structure Types & Prefabricated Foundation (انواع سازه و فونداسیون پیش‌ساخته) */}
         <ComparisonTable />
 
-        {/* 8. Live Steel Prices & Material Weight Calculator (رصد آنلاین مراجع قیمت آهن و محاسبه‌گر سوله) */}
+        {/* 9. Live Steel Prices & Material Weight Calculator (رصد آنلاین مراجع قیمت آهن و محاسبه‌گر سوله صنعتی سبک بهینه شده) */}
         <SteelPriceAndToolsSection 
           config={config}
         />
 
-        {/* 9. Engineering Blog & SEO Articles */}
+        {/* 10. Engineering Blog & Technical Articles */}
         <BlogSection 
           posts={blogPosts}
         />
 
-        {/* 9. SEO FAQs Section */}
+        {/* 11. FAQ Section */}
         <FaqSection />
 
-        {/* 10. Contact & Factory Addresses */}
+        {/* 12. Contact & Factory Addresses + Interactive Sheyban Map with Google Maps & Local Routing */}
         <ContactSection 
           config={config}
         />
 
       </main>
 
-      {/* 11. Footer */}
+      {/* 13. Footer: Deep Corporate Navy, Blue Logo, Full 31 Provinces SEO Link Cloud */}
       <Footer 
         config={config}
       />
 
-      {/* 12. Floating Quick Contact Dock (Mobile & Desktop) */}
+      {/* 14. Floating Quick Contact Dock (Mobile & Desktop with Direct Phone Number) */}
       <FloatingActionDock 
         config={config}
         onOpenQuoteForm={scrollToQuoteForm}

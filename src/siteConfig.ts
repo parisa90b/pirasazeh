@@ -1,28 +1,27 @@
-import { CompanyConfig, ProjectItem, CraneProjectItem, BridgeProjectItem, GalleryImageItem, BlogPost, ProcessStep, StructureComparison, StructureTypeItem, GoogleSheetsConfig } from './types';
+import { CompanyConfig, ProjectItem, CraneProjectItem, BridgeProjectItem, GalleryImageItem, BlogPost, ProcessStep, StructureComparison, StructureTypeItem, GoogleSheetsConfig, IranProvinceItem } from './types';
 
 /**
  * =======================================================================
  * 📄 فایل جامع مدیریت محتوا و تنظیمات وب‌سایت (Site Content & Config)
  * =======================================================================
- * با ویرایش مقادیر این فایل می‌توانید نام شرکت، شماره‌های تماس، لینک‌های
- * واتساپ، بله، ایتا، تلگرام، نمونه‌کارها، ابعاد، عکس‌ها و مقالات بلاگ را
- * بدون نیاز به دستکاری کدهای دیگر به راحتی تغییر دهید.
  */
 
 /* -----------------------------------------------------------------------
- * ۱. اطلاعات تماس، نام شرکت و شبکه‌های اجتماعی
+ * ۱. اطلاعات تماس، نام شرکت، مدیریت علمی و شبکه‌های اجتماعی
  * ----------------------------------------------------------------------- */
 export const COMPANY_INFO: CompanyConfig = {
-  companyName: 'سوله پیراسازه',
-  brandTitle: 'سوله پیراسازه',
-  tagline: 'طراحی تخصصی، محاسبات مهندسی، ساخت و نصب انواع سوله صنعتی، کارگاهی و سازه‌های فلزی در استان خوزستان و سراسر کشور',
+  companyName: 'سوله پیراسازه نوین',
+  brandTitle: 'سوله پیراسازه نوین | مدیریت دکتر پیراسته',
+  doctorTitle: 'دکتر پیراسته',
+  doctorAffiliation: 'عضو هیئت علمی دانشگاه شهید چمران اهواز',
+  tagline: 'طراحی تخصصی، محاسبات مهندسی و ساخت انواع سوله صنعتی، سبک بهینه و اسکلت فلزی با مدیریت دکتر پیراسته (عضو هیئت علمی دانشگاه چمران) در سراسر ایران',
   
-  // شماره‌های تماس
-  phonePrimary: '09169881321',       // شماره همراه و تماس مستقیم
-  phoneSecondary: '09169881321',     // شماره دفتر کیانپارس
-  phoneFactory: '09169881321',       // شماره کارگاه شیبان
-  phoneSales1: '09169881321',        // کارشناس برآورد و استعلام قیمت
-  phoneSales2: '09169881321',        // هماهنگی نصب و اجرا
+  // شماره‌های تماس (نمایش در خط اول نتایج گوگل)
+  phonePrimary: '09169881321',       // شماره همراه و تماس مستقیم مهندس ناظر و دفتر
+  phoneSecondary: '09169881321',     // شماره دفتر مرکزی کیانپارس
+  phoneFactory: '09169881321',       // شماره کارگاه ساخت و مونتاژ شیبان
+  phoneSales1: '09169881321',        // کارشناس برآورد وزن و استعلام قیمت
+  phoneSales2: '09169881321',        // هماهنگی نصب سراسر کشور
 
   // شبکه‌های اجتماعی و پیام‌رسان‌ها
   whatsappNumber: '989169881321',    // شماره واتساپ بدون صفر با پیش‌شماره ایران
@@ -34,8 +33,45 @@ export const COMPANY_INFO: CompanyConfig = {
 
   // آدرس‌ها
   officeAddress: 'خوزستان، اهواز، کیانپارس',
-  factoryAddress: 'خوزستان، اهواز، شیبان (کارگاه ساخت و مونتاژ سوله پیراسازه)',
+  factoryAddress: 'خوزستان، اهواز، شیبان (کارگاه ساخت و مونتاژ سوله پیراسازه نوین)',
 };
+
+/* -----------------------------------------------------------------------
+ * ۱.۱ داده‌های جامع پوشش سئو و مهندسی تمام ۳۱ استان و شهرک‌های صنعتی ایران
+ * ----------------------------------------------------------------------- */
+export const IRAN_PROVINCES_DATA: IranProvinceItem[] = [
+  { id: 'khuzestan', name: 'خوزستان', capital: 'اهواز', industrialHubs: 'شیبان، ماهشهر، دزفول، آبادان، خرمشهر، اندیمشک، شوشتر، رامهرمز، بهبهان، ایذه، امیدیه، مسجدسلیمان', windSpeedKmh: 120, snowLoadKg: 25, seismicZone: 'متوسط تا زیاد', deliveryTimeDays: '۱ الی ۳ روز' },
+  { id: 'tehran', name: 'تهران', capital: 'تهران', industrialHubs: 'شمس‌آباد، عباس‌آباد، پرند، چهاردانگه، پاکدشت، نصیرآباد، خرمدشت، شورآباد، سیمین‌دشت', windSpeedKmh: 110, snowLoadKg: 150, seismicZone: 'خیلی زیاد (گسل فعال)', deliveryTimeDays: '۳ الی ۵ روز' },
+  { id: 'isfahan', name: 'اصفهان', capital: 'اصفهان', industrialHubs: 'مبارکه، مورچه‌خورت، محمودآباد، راوند کاشان، سجزی، نجف‌آباد، اشترجان، شهرضا', windSpeedKmh: 100, snowLoadKg: 100, seismicZone: 'متوسط', deliveryTimeDays: '۲ الی ۴ روز' },
+  { id: 'fars', name: 'فارس', capital: 'شیراز', industrialHubs: 'شهرک صنعتی بزرگ شیراز، آباده، مرودشت، لارستان، کازرون، فسا، جهرم، زرقان', windSpeedKmh: 110, snowLoadKg: 100, seismicZone: 'زیاد', deliveryTimeDays: '۲ الی ۴ روز' },
+  { id: 'razavi-khorasan', name: 'خراسان رضوی', capital: 'مشهد', industrialHubs: 'توس، کلات، چرمشهر مشهد، کاویان، نیشابور، سبزوار، تربت حیدریه، چناران', windSpeedKmh: 120, snowLoadKg: 150, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'east-azerbaijan', name: 'آذربایجان شرقی', capital: 'تبریز', industrialHubs: 'سلیمی، ارس، رجایی تبریز، مراغه، میانه، مرند، بستان‌آباد، شبستر', windSpeedKmh: 120, snowLoadKg: 200, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'alborz', name: 'البرز', capital: 'کرج', industrialHubs: 'اشتهارد، سیمین‌دشت، بهارستان، نظرآباد، سپهر، هشتگرد، هشتگرد صنعتی', windSpeedKmh: 110, snowLoadKg: 150, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۳ الی ۵ روز' },
+  { id: 'markazi', name: 'مرکزی', capital: 'اراک', industrialHubs: 'خیرآباد اراک، کاوه ساوه، مامونیه، دلیجان، محلات، خمین، شازند', windSpeedKmh: 115, snowLoadKg: 150, seismicZone: 'متوسط تا زیاد', deliveryTimeDays: '۲ الی ۴ روز' },
+  { id: 'qom', name: 'قم', capital: 'قم', industrialHubs: 'شکوهیه، محمودآباد قم، سلفچگان، الغدیر، ثامن‌الائمه، قنوات', windSpeedKmh: 100, snowLoadKg: 100, seismicZone: 'زیاد', deliveryTimeDays: '۲ الی ۴ روز' },
+  { id: 'qazvin', name: 'قزوین', capital: 'قزوین', industrialHubs: 'البرز، کاسپین، لیا، حیدریه، آبیک، بوئین‌زهرا، خرمدشت قزوین', windSpeedKmh: 120, snowLoadKg: 150, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۳ الی ۵ روز' },
+  { id: 'yazd', name: 'یزد', capital: 'یزد', industrialHubs: 'شهرک صنعتی یزد، مهریز، اردکان، میبد، اشکذر، بافق، ابرکوه', windSpeedKmh: 100, snowLoadKg: 50, seismicZone: 'متوسط', deliveryTimeDays: '۳ الی ۵ روز' },
+  { id: 'kerman', name: 'کرمان', capital: 'کرمان', industrialHubs: 'سیرجان، رفسنجان، کهنوج، بم، بافت، جیرفت، زرند، شهرک سدید', windSpeedKmh: 110, snowLoadKg: 100, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۳ الی ۵ روز' },
+  { id: 'bushehr', name: 'بوشهر', capital: 'بوشهر', industrialHubs: 'عسلویه، برازجان، کنگان، گناوه، دیلم، دیر، منطقه ویژه اقتصادی بوشهر', windSpeedKmh: 130, snowLoadKg: 0, seismicZone: 'زیاد', deliveryTimeDays: '۲ الی ۳ روز' },
+  { id: 'hormozgan', name: 'هرمزگان', capital: 'بندرعباس', industrialHubs: 'شهید رجایی، قشم، کیش، بندرلنگه، میناب، جاسک، رودان، منطقه خلیج فارس', windSpeedKmh: 130, snowLoadKg: 0, seismicZone: 'زیاد', deliveryTimeDays: '۳ الی ۴ روز' },
+  { id: 'gilan', name: 'گیلان', capital: 'رشت', industrialHubs: 'رشت، انزلی (منطقه آزاد)، لاهیجان، رودسر، لنگرود، تالش، فومن، صومعه‌سرا', windSpeedKmh: 120, snowLoadKg: 150, seismicZone: 'خیلی زیاد (منجیل)', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'mazandaran', name: 'مازندران', capital: 'ساری', industrialHubs: 'سلمانشهر، بابلکنار، آمل، قائمشهر، نوشهر، تنکابن، نکا، جویبار', windSpeedKmh: 120, snowLoadKg: 120, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'golestan', name: 'گلستان', capital: 'گرگان', industrialHubs: 'آق‌قلا، گنبد کاووس، علی‌آباد کتول، بندرگز، کردکوی، مینودشت، آزادشهر', windSpeedKmh: 110, snowLoadKg: 100, seismicZone: 'زیاد', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'kermanshah', name: 'کرمانشاه', capital: 'کرمانشاه', industrialHubs: 'فرامان، زاگرس، اسلام‌آباد غرب، سرپل ذهاب، کنگاور، سنقر، جوانرود', windSpeedKmh: 120, snowLoadKg: 150, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۲ الی ۴ روز' },
+  { id: 'kurdistan', name: 'کردستان', capital: 'سنندج', industrialHubs: 'سنندج ۱ و ۲، سقز، بانه، مریوان، قروه، دهگلان، بیجار، کامیاران', windSpeedKmh: 120, snowLoadKg: 200, seismicZone: 'زیاد', deliveryTimeDays: '۳ الی ۵ روز' },
+  { id: 'hamadan', name: 'همدان', capital: 'همدان', industrialHubs: 'بوعلی، ویان، ملایر، نهاوند، تویسرکان، بهار، رزن، اسدآباد', windSpeedKmh: 120, snowLoadKg: 150, seismicZone: 'متوسط تا زیاد', deliveryTimeDays: '۲ الی ۴ روز' },
+  { id: 'lorestan', name: 'لرستان', capital: 'خرم‌آباد', industrialHubs: 'خرم‌آباد، بروجرد، الیگودرز، دورود، کوهدشت، ازنا، پلدختر، سلسله', windSpeedKmh: 120, snowLoadKg: 150, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۱ الی ۳ روز' },
+  { id: 'zanjan', name: 'زنجان', capital: 'زنجان', industrialHubs: 'روی، اشراق، کهناب، نوآوران، ابهر، خرمدره، خدابنده، سلطانیه', windSpeedKmh: 115, snowLoadKg: 150, seismicZone: 'زیاد', deliveryTimeDays: '۳ الی ۵ روز' },
+  { id: 'semnan', name: 'سمنان', capital: 'سمنان', industrialHubs: 'سمنان، شاهرود، دامغان، گرمسار، ایوانکی، مهدی‌شهر، سرخه', windSpeedKmh: 110, snowLoadKg: 100, seismicZone: 'زیاد', deliveryTimeDays: '۳ الی ۵ روز' },
+  { id: 'ardabil', name: 'اردبیل', capital: 'اردبیل', industrialHubs: 'اردبیل ۱ و ۲، مشگین‌شهر، پارس‌آباد مغان، خلخال، نمین، گرمی، بیله‌سوار', windSpeedKmh: 130, snowLoadKg: 200, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'west-azerbaijan', name: 'آذربایجان غربی', capital: 'ارومیه', industrialHubs: 'ارومیه ۱، ۲ و ۳، خوی، میاندوآب، مهاباد، بوکان، سلماس، نقده، ماکو', windSpeedKmh: 115, snowLoadKg: 180, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'chaharmahal', name: 'چهارمحال و بختیاری', capital: 'شهرکرد', industrialHubs: 'شهرکرد، بروجن، لردگان، فرخشهر، فارسان، سامان، بن', windSpeedKmh: 120, snowLoadKg: 200, seismicZone: 'زیاد', deliveryTimeDays: '۲ الی ۳ روز' },
+  { id: 'kohgiluyeh', name: 'کهگیلویه و بویراحمد', capital: 'یاسوج', industrialHubs: 'یاسوج ۱ و ۲، گچساران (دوگنبدان)، دهدشت، دنا، چرام، باشت', windSpeedKmh: 110, snowLoadKg: 120, seismicZone: 'زیاد', deliveryTimeDays: '۱ الی ۲ روز' },
+  { id: 'ilam', name: 'ایلام', capital: 'ایلام', industrialHubs: 'ایلام، دهلران، مهران، ایوان، دره‌شهر، آبدانان، چرداول، بدره', windSpeedKmh: 110, snowLoadKg: 50, seismicZone: 'زیاد', deliveryTimeDays: '۱ الی ۳ روز' },
+  { id: 'north-khorasan', name: 'خراسان شمالی', capital: 'بجنورد', industrialHubs: 'بجنورد، شیروان، اسفراین، جاجرم، مانه و سملقان، فاروج', windSpeedKmh: 110, snowLoadKg: 150, seismicZone: 'خیلی زیاد', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'south-khorasan', name: 'خراسان جنوبی', capital: 'بیرجند', industrialHubs: 'بیرجند، قائنات، طبس، فردوس، نهبندان، سرایان، بشرویه', windSpeedKmh: 120, snowLoadKg: 50, seismicZone: 'زیاد', deliveryTimeDays: '۴ الی ۶ روز' },
+  { id: 'sistan', name: 'سیستان و بلوچستان', capital: 'زاهدان', industrialHubs: 'چابهار (منطقه آزاد)، زاهدان، ایرانشهر، زابل، سراوان، خاش، نیک‌شهر', windSpeedKmh: 130, snowLoadKg: 0, seismicZone: 'متوسط تا زیاد', deliveryTimeDays: '۴ الی ۶ روز' }
+];
 
 /* -----------------------------------------------------------------------
  * ۲. تنظیمات اتصال دائمی به گوگل شیت (Google Sheets CMS)

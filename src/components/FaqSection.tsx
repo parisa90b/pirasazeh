@@ -13,19 +13,19 @@ export const FaqSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" itemScope itemType="https://schema.org/FAQPage" className="py-16 lg:py-24 bg-[#F5EFEB] border-b border-[#E8DFD5]">
+    <section id="faq" itemScope itemType="https://schema.org/FAQPage" className="py-16 lg:py-24 bg-white border-b border-slate-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#D8CEBF] bg-[#F3ECE4] px-4 py-1 text-xs font-bold text-amber-900 mb-3 shadow-sm">
-            <HelpCircle className="w-3.5 h-3.5 text-amber-700" />
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1 text-xs font-bold text-blue-900 shadow-xs">
+            <HelpCircle className="w-3.5 h-3.5 text-blue-700" />
             <span>پاسخ به ابهامات متداول</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-stone-900 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
             پرسش‌های متداول کارفرمایان و سازندگان
           </h2>
-          <p className="text-xs sm:text-sm text-stone-600 mt-2">
+          <p className="text-xs sm:text-sm text-slate-600">
             پاسخ‌های شفاف و مهندسی به متداول‌ترین سوالات درباره مشخصات فنی، زمان‌بندی ساخت و ضوابط نظام مهندسی سوله
           </p>
         </div>
@@ -40,16 +40,16 @@ export const FaqSection: React.FC = () => {
                 itemScope
                 itemProp="mainEntity"
                 itemType="https://schema.org/Question"
-                className="rounded-2xl border border-[#E0D5C7] bg-white overflow-hidden transition-all shadow-sm"
+                className="rounded-2xl border border-slate-200 bg-slate-50/70 overflow-hidden transition-all shadow-xs"
               >
                 <button
                   onClick={() => toggleAccordion(idx)}
-                  className="w-full p-5 text-right flex items-center justify-between gap-4 cursor-pointer hover:bg-[#FAF8F5] transition-colors"
+                  className="w-full p-5 text-right flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-100 transition-colors"
                 >
-                  <span itemProp="name" className="text-sm font-bold text-stone-900">
+                  <span itemProp="name" className="text-sm font-bold text-slate-900">
                     {faq.q}
                   </span>
-                  <div className={`w-8 h-8 rounded-xl bg-[#F3ECE4] flex items-center justify-center text-amber-900 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 bg-amber-700 text-white' : ''}`}>
+                  <div className={`w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-blue-800 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 bg-blue-700 text-white' : ''}`}>
                     <ChevronDown className="w-4 h-4" />
                   </div>
                 </button>
@@ -58,12 +58,12 @@ export const FaqSection: React.FC = () => {
                   <div 
                     itemScope 
                     itemProp="acceptedAnswer" 
-                    itemType="https://schema.org/Answer"
-                    className="px-5 pb-5 pt-1 text-xs sm:text-sm text-stone-600 leading-relaxed border-t border-[#F0E8DF] bg-[#FAF8F5]/50 text-right animate-in fade-in duration-200"
+                    itemType="https://schema.org/Answer" 
+                    className="p-5 pt-0 text-xs text-slate-600 leading-relaxed border-t border-slate-200/60 mt-2"
                   >
-                    <div itemProp="text">
+                    <p itemProp="text">
                       {faq.a}
-                    </div>
+                    </p>
                   </div>
                 )}
               </div>
