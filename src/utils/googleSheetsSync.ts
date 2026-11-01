@@ -56,7 +56,7 @@ export async function fetchSheetData(sheetId: string, sheetName: string): Promis
   const encodedSheet = encodeURIComponent(sheetName);
   const url = `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:json&sheet=${encodedSheet}&headers=1`;
 
-  const response = await fetch(url);
+  const response = await fetch(url, { signal: AbortSignal.timeout(2000) });
   if (!response.ok) {
     throw new Error(`خطا در برقراری ارتباط با گوگل شیت (${response.status}: ${response.statusText}). لطفاً مطمئن شوید دسترسی شیت روی «Anyone with the link can view» تنظیم شده باشد.`);
   }

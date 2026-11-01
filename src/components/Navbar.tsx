@@ -41,7 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </div>
                 <span className="text-[11px] font-semibold text-blue-800 hidden sm:block">
-                  مدیریت دکتر پیراسته (عضو هیئت علمی دانشگاه چمران)
+                  مدیریت دکتر علی‌اکبر پیراسته (عضو هیئت علمی دانشگاه چمران)
                 </span>
               </div>
             </a>

@@ -146,11 +146,11 @@ export async function fetchSheetRows(sheetId: string, sheetName?: string): Promi
   const hasSheetName = Boolean(sheetName && sheetName.trim() !== '');
   const sheetParam = hasSheetName ? `&sheet=${encodeURIComponent(sheetName!.trim())}` : '';
 
-  // 1. Try Google Visualization API (JSON endpoint - fast and structured)
+  // 1. Try Google Visualization API (JSON endpoint - fast and structured with strict 2s timeout)
   const gvizUrl = `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:json${sheetParam}`;
   
   try {
-    const res = await fetch(gvizUrl);
+    const res = await fetch(gvizUrl, { signal: AbortSignal.timeout(2000) });
     if (res.ok) {
       const text = await res.text();
       const rows = parseGVizResponse(text);
@@ -163,10 +163,10 @@ export async function fetchSheetRows(sheetId: string, sheetName?: string): Promi
       }
     }
   } catch (err) {
-    console.warn('GViz fetch failed, falling back to CSV export:', err);
+    console.warn('GViz fetch failed or timed out:', err);
   }
 
-  // 2. Fallback: Google Sheets CSV Export endpoint
+  // 2. Fallback: Google Sheets CSV Export endpoint with strict 2s timeout
   const csvUrl = `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:csv${sheetParam}`;
   const altCsvUrl = hasSheetName
     ? `https://docs.google.com/spreadsheets/d/${cleanId}/export?format=csv&sheet=${encodeURIComponent(sheetName!.trim())}`
@@ -174,7 +174,7 @@ export async function fetchSheetRows(sheetId: string, sheetName?: string): Promi
 
   for (const url of [csvUrl, altCsvUrl]) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: AbortSignal.timeout(2000) });
       if (res.ok) {
         const csvText = await res.text();
         const parsed = parseCSV(csvText);

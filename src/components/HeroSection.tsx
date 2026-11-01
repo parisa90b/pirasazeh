@@ -34,11 +34,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Right Column: Hero Content & Value Props (7 Cols) */}
           <div className="lg:col-span-7 text-right space-y-6">
             
-            {/* Dr. Pirasteh Academic Leadership Trust Pill */}
+            {/* Dr. Ali Akbar Pirasteh Academic Leadership Trust Pill */}
             <div className="inline-flex flex-wrap items-center gap-2 rounded-full border border-blue-200 bg-white/90 backdrop-blur-xs px-4 py-1.5 text-xs font-bold text-blue-900 shadow-xs">
               <span className="flex items-center gap-1.5 text-blue-700">
                 <GraduationCap className="w-4 h-4" />
-                <strong>مدیریت: دکتر پیراسته</strong>
+                <strong>مدیریت: دکتر علی‌اکبر پیراسته</strong>
               </span>
               <span className="text-slate-300">|</span>
               <span className="text-slate-600 font-medium">عضو هیئت علمی دانشگاه شهید چمران اهواز</span>
@@ -73,7 +73,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Sub-headline */}
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-              شرکت مهندسی سوله پیراسازه نوین با کارخانه و کارگاه تخصصی ساخت در شیبان اهواز، تحت نظارت عالیه دکتر پیراسته (عضو هیئت علمی دانشگاه چمران)، تامین مستقیم فولاد از کارخانجات اکسین و کاویان، بهینه‌سازی محاسباتی در نرم‌افزارهای تکلا و سپ، جوش اتوماتیک زیرپودری و گارانتی کتبی ۳ ساله در خدمت پروژه‌های سراسر کشور می‌باشد.
+              شرکت مهندسی پیراسازه نوین با کارخانه و کارگاه تخصصی ساخت در شیبان اهواز، تحت نظارت عالیه دکتر علی‌اکبر پیراسته (عضو هیئت علمی دانشگاه چمران)، تامین مستقیم فولاد از کارخانجات اکسین و کاویان، بهینه‌سازی محاسباتی در نرم‌افزارهای تکلا و سپ، جوش اتوماتیک زیرپودری و گارانتی کتبی ۳ ساله در خدمت پروژه‌های سراسر کشور می‌باشد.
             </p>
 
             {/* Key Advantages Checklist */}
@@ -151,7 +151,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-1.5 text-[11px] font-bold text-blue-700">
                     <Award className="w-3.5 h-3.5" />
-                    <span>دفتر محاسبات سازه دکتر پیراسته</span>
+                    <span>دفتر محاسبات سازه دکتر علی‌اکبر پیراسته</span>
                   </div>
                   <h3 className="text-base font-extrabold text-slate-900">
                     استعلام سریع سوله و اسکلت فلزی

@@ -3,13 +3,18 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://solehsazeh.ir/</loc>
-    <lastmod>2025-05-01</lastmod>
+    <lastmod>2026-11-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://solehsazeh.ir/images/projects/1.jfif</image:loc>
-      <image:title>سوله سازی اهواز - کارگاه سوله سازی پیراسازه شیبان</image:title>
-      <image:caption>طراحی و ساخت انواع سوله صنعتی تیرورقی و اسکلت فلزی در اهواز و خوزستان</image:caption>
+      <image:loc>https://solehsazeh.ir/shed-portfolio-preview.jpg</image:loc>
+      <image:title>نمونه کار سوله صنعتی تیرورقی و سبک بهینه - شرکت پیراسازه نوین</image:title>
+      <image:caption>سوله سازی پیراسازه نوین با مدیریت دکتر علی‌اکبر پیراسته (هیئت علمی دانشگاه چمران) - کارخانه شیبان اهواز</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://solehsazeh.ir/logo.png</image:loc>
+      <image:title>لوگوی شرکت پیراسازه نوین</image:title>
+      <image:caption>لوگوی رسمی شرکت مهندسی ساخت سوله پیراسازه نوین با رنگ آبی صنعتی</image:caption>
     </image:image>
   </url>
 </urlset>
