@@ -41,12 +41,25 @@ export const FloatingActionDock: React.FC<FloatingActionDockProps> = ({
           <span>واتساپ</span>
         </a>
 
+        {/* Eitaa Button */}
+        <a
+          href={`https://eitaa.com/${config.eitaaId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 py-2.5 px-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+          title="پیام در ایتا"
+        >
+          <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+          <span>ایتا</span>
+        </a>
+
         {/* Bale Button */}
         <a
           href={`https://ble.ir/${config.baleId}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 py-2.5 px-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+          className="flex-1 py-2.5 px-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+          title="پیام در بله"
         >
           <Send className="w-3.5 h-3.5 shrink-0" />
           <span>بله</span>
@@ -55,7 +68,7 @@ export const FloatingActionDock: React.FC<FloatingActionDockProps> = ({
         {/* Quote Form Trigger Button */}
         <button
           onClick={onOpenQuoteForm}
-          className="flex-1 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-blue-200 border border-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          className="flex-1 py-2.5 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-blue-200 border border-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
         >
           <span>استعلام قیمت</span>
         </button>
